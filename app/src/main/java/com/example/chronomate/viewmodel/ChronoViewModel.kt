@@ -109,10 +109,20 @@ class ChronoViewModel(context: Context) : ViewModel() {
         val compMode = CompensationMode.valueOf(prefs.getString("comp_mode", CompensationMode.NONE.name) ?: CompensationMode.NONE.name)
         val chronoType = ChronoType.valueOf(prefs.getString("chrono_type", ChronoType.HT_X3000.name) ?: ChronoType.HT_X3000.name)
 
+        val velocityUnit = runCatching {
+            VelocityUnit.valueOf(
+                prefs.getString(
+                    "velocity_unit",
+                    VelocityUnit.METERS_PER_SECOND.name
+                ) ?: VelocityUnit.METERS_PER_SECOND.name
+            )
+        }.getOrDefault(VelocityUnit.METERS_PER_SECOND)
+
         _uiState.update { it.copy(
             isDarkMode = prefs.getBoolean("dark_mode", true),
             keepScreenOn = prefs.getBoolean("keep_screen_on", false),
             language = prefs.getString("language", "en") ?: "en",
+            velocityUnit = velocityUnit,
             maxAllowedJoule = prefs.getFloat("max_joule", 1.5f),
             maxAllowedOverhopCm = prefs.getFloat("max_overhop", 15f),
             weightType = WeightType.valueOf(prefs.getString("weight_type", WeightType.BB.name) ?: WeightType.BB.name),
@@ -159,6 +169,11 @@ class ChronoViewModel(context: Context) : ViewModel() {
         }
         savePreference(context, "calibration_entries", serialized)
         savePreference(context, "comp_mode", state.compensationMode.name)
+    }
+    
+    fun setVelocityUnit(context: Context, unit: VelocityUnit) {
+        _uiState.update { it.copy(velocityUnit = unit) }
+        savePreference(context, "velocity_unit", unit.name)
     }
 
     fun toggleDarkMode(context: Context, enabled: Boolean) {

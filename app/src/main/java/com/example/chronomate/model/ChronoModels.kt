@@ -19,6 +19,21 @@ enum class WeightType {
     BB, DIABLO, CUSTOM
 }
 
+enum class VelocityUnit(val symbol: String) {
+    METERS_PER_SECOND("m/s"),
+    FEET_PER_SECOND("FPS");
+
+    fun fromMetersPerSecond(value: Float): Float = when (this) {
+        METERS_PER_SECOND -> value
+        FEET_PER_SECOND -> value * 3.28084f
+    }
+
+    fun toMetersPerSecond(value: Float): Float = when (this) {
+        METERS_PER_SECOND -> value
+        FEET_PER_SECOND -> value / 3.28084f
+    }
+}
+
 enum class CompensationMode {
     NONE, MEDIAN, TRUST_EXTERNAL
 }
@@ -81,6 +96,7 @@ data class ChronoData(
     val isDarkMode: Boolean = true,
     val keepScreenOn: Boolean = false,
     val language: String = "en",
+    val velocityUnit: VelocityUnit = VelocityUnit.METERS_PER_SECOND,
     val maxAllowedJoule: Float = 1.5f,
     val maxAllowedOverhopCm: Float = 15.0f,
     

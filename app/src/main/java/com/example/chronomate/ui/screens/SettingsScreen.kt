@@ -32,6 +32,7 @@ import com.example.chronomate.model.CalibrationEntry
 import com.example.chronomate.model.ChronoData
 import com.example.chronomate.model.CompensationMode
 import com.example.chronomate.model.WeightType
+import com.example.chronomate.model.VelocityUnit
 import com.example.chronomate.viewmodel.ChronoViewModel
 
 @Composable
@@ -108,6 +109,62 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
             leadingContent = { Icon(Icons.Default.Language, contentDescription = null) },
             modifier = Modifier.clickable { showLanguageDialog = true }
         )
+        
+        var velocityUnitExpanded by remember { mutableStateOf(false) }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Velocity Unit",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = "Select the velocity unit used throughout the app",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Box(modifier = Modifier.fillMaxWidth()) {
+            OutlinedButton(
+                onClick = { velocityUnitExpanded = true },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(data.velocityUnit.symbol)
+                Icon(
+                    Icons.Default.ArrowDropDown,
+                    contentDescription = null
+                )
+            }
+
+            DropdownMenu(
+                expanded = velocityUnitExpanded,
+                onDismissRequest = { velocityUnitExpanded = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Meters per second (m/s)") },
+                    onClick = {
+                        viewModel.setVelocityUnit(
+                            context,
+                            VelocityUnit.METERS_PER_SECOND
+                        )
+                        velocityUnitExpanded = false
+                    }
+                )
+
+                DropdownMenuItem(
+                    text = { Text("Feet per second (FPS)") },
+                    onClick = {
+                        viewModel.setVelocityUnit(
+                            context,
+                            VelocityUnit.FEET_PER_SECOND
+                        )
+                        velocityUnitExpanded = false
+                    }
+                )
+            }
+        }
         
         Spacer(modifier = Modifier.height(32.dp))
 
