@@ -42,7 +42,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
     var showLanguageDialog by remember { mutableStateOf(false) }
     var weightsExpanded by remember { mutableStateOf(false) }
     var calibrationExpanded by remember { mutableStateOf(false) }
-    var showFixedChronoWarning by remember {mutableStateOf(false)}
+    var showFixedChronoWarning by remember { mutableStateOf(false) }
 
     val languages = remember {
         listOf(
@@ -65,7 +65,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(scrollState)) {
         Text(stringResource(R.string.general_settings), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         // Dark Mode Toggle
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -104,13 +104,13 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
 
         ListItem(
             headlineContent = { Text(stringResource(R.string.language)) },
-            supportingContent = { 
-                Text(languages.find { it.second == data.language }?.first ?: "English") 
+            supportingContent = {
+                Text(languages.find { it.second == data.language }?.first ?: "English")
             },
             leadingContent = { Icon(Icons.Default.Language, contentDescription = null) },
             modifier = Modifier.clickable { showLanguageDialog = true }
         )
-        
+
         var velocityUnitExpanded by remember { mutableStateOf(false) }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -166,7 +166,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                 )
             }
         }
-        
+
         Spacer(modifier = Modifier.height(32.dp))
 
         // Chrono Selection
@@ -189,16 +189,16 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
             DropdownMenu(expanded = chronoExpanded, onDismissRequest = { chronoExpanded = false }) {
                 DropdownMenuItem(
                     text = { Text(stringResource(R.string.ht_x3000)) },
-                    onClick = { 
+                    onClick = {
                         viewModel.setChronoType(context, com.example.chronomate.model.ChronoType.HT_X3000)
-                        chronoExpanded = false 
+                        chronoExpanded = false
                     }
                 )
                 DropdownMenuItem(
                     text = { Text(stringResource(R.string.ht_50)) },
-                    onClick = { 
+                    onClick = {
                         viewModel.setChronoType(context, com.example.chronomate.model.ChronoType.HT_50)
-                        chronoExpanded = false 
+                        chronoExpanded = false
                     }
                 )
             }
@@ -207,12 +207,14 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Fixed Chronograph Profile",
+            text = stringResource(R.string.fixed_chrono_title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )
         Text(
-            text = "Keep one profile locked on the chronograph and select the actual BB only in ChronoMate.",
+            text = stringResource(
+    R.string.fixed_chrono_description
+),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -226,11 +228,15 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Use fixed chronograph profile",
+                    text = stringResource(R.string.fixed_chrono_toggle),
                     style = MaterialTheme.typography.titleSmall
                 )
                 Text(
-                    text = if (data.fixedChronoProfileEnabled) "Enabled" else "Disabled",
+                    text = if (data.fixedChronoProfileEnabled) {
+    stringResource(R.string.fixed_chrono_enabled)
+} else {
+    stringResource(R.string.fixed_chrono_disabled)
+},
                     style = MaterialTheme.typography.bodySmall,
                     color = if (data.fixedChronoProfileEnabled) {
                         MaterialTheme.colorScheme.primary
@@ -287,11 +293,14 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "Chronograph output unit",
+                        text = stringResource(R.string.fixed_chrono_output_unit),
                         style = MaterialTheme.typography.labelMedium
                     )
                     Text(
-                        text = "Select the unit currently configured on the chronograph.",
+                        text = stringResource(
+    R.string.fixed_chrono_output_unit_description
+),
+
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -315,7 +324,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                             onDismissRequest = { chronoOutputUnitExpanded = false }
                         ) {
                             DropdownMenuItem(
-                                text = { Text("Meters per second (m/s)") },
+                                text = { Text(stringResource(R.string.velocity_unit_mps)) },
                                 onClick = {
                                     viewModel.setChronoOutputUnit(
                                         context,
@@ -325,7 +334,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                                 }
                             )
                             DropdownMenuItem(
-                                text = { Text("Feet per second (FPS)") },
+                                text = { Text(stringResource(R.string.velocity_unit_fps)) },
                                 onClick = {
                                     viewModel.setChronoOutputUnit(
                                         context,
@@ -354,7 +363,11 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                                         viewModel.setFixedChronoWeight(context, weight)
                                     }
                             },
-                            label = { Text("Locked weight") },
+                            label = {
+                                Text(
+                                    stringResource(R.string.fixed_chrono_locked_weight)
+                                )
+                            },
                             suffix = { Text("g") },
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Decimal
@@ -374,7 +387,13 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                                         viewModel.setFixedChronoDiameter(context, diameter)
                                     }
                             },
-                            label = { Text("Locked diameter") },
+                            label = {
+    Text(
+        stringResource(
+            R.string.fixed_chrono_locked_diameter
+        )
+    )
+},
                             suffix = { Text("mm") },
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Decimal
@@ -387,11 +406,12 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
-                        text = "Chronograph profile: %.2f g / %.2f mm / %s".format(
-                            data.fixedChronoWeightGrams,
-                            data.fixedChronoDiameterMm,
-                            data.chronoOutputUnit.symbol
-                        ),
+                        text = stringResource(
+    R.string.fixed_chrono_profile_summary,
+    data.fixedChronoWeightGrams,
+    data.fixedChronoDiameterMm,
+    data.chronoOutputUnit.symbol
+),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold
@@ -465,7 +485,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(if (data.isCalibrationActive) stringResource(R.string.stop_calibration) else stringResource(R.string.start_calibration))
                     }
-                    
+
                     OutlinedButton(
                         onClick = { viewModel.clearCalibration(context) },
                         modifier = Modifier.weight(0.6f)
@@ -476,7 +496,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
 
                 if (data.calibrationEntries.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(16.dp))
-                    Row(modifier = Modifier.fillMaxWidth().clickable { calibrationExpanded = !calibrationExpanded }.padding(vertical = 8.dp), 
+                    Row(modifier = Modifier.fillMaxWidth().clickable { calibrationExpanded = !calibrationExpanded }.padding(vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                         Text("${data.calibrationEntries.size} Entries", style = MaterialTheme.typography.titleSmall)
                         Icon(if (calibrationExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore, contentDescription = null)
@@ -503,15 +523,15 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                 }
             }
         }
-        
+
         Spacer(modifier = Modifier.height(32.dp))
-        
+
         // Weight Type Selection
         Text(stringResource(R.string.weight_config_title), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(12.dp))
-        
+
         Row(
-            modifier = Modifier.fillMaxWidth(), 
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -534,9 +554,9 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                 modifier = Modifier.weight(1f)
             )
         }
-        
+
         Spacer(modifier = Modifier.height(16.dp))
-        
+
         // Expandable Custom Weights Table
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -554,7 +574,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                         contentDescription = null
                     )
                 }
-                
+
                 AnimatedVisibility(visible = weightsExpanded) {
                     Column {
                         if (data.customWeights.isEmpty()) {
@@ -584,7 +604,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                                 }
                             }
                         }
-                        
+
                         Button(
                             onClick = { viewModel.addCustomWeight(context) },
                             modifier = Modifier.fillMaxWidth().padding(8.dp),
@@ -600,7 +620,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
         }
 
         Spacer(modifier = Modifier.height(32.dp))
-        
+
         Text(stringResource(R.string.ballistics_engine_params), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         Text(stringResource(R.string.fine_tune_physics), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(modifier = Modifier.height(16.dp))
@@ -629,7 +649,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                             showLanguageDialog = false
                         }
                     }
-                    
+
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = stringResource(R.string.restart_required_desc),
@@ -658,27 +678,28 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
             )
         },
         title = {
-            Text("Fixed Chronograph Profile")
+            Text(stringResource(R.string.fixed_chrono_title))
         },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    "When this feature is enabled, keep the chronograph " +
-                        "locked to the configured weight, diameter and " +
-                        "output unit."
+                    text = stringResource(
+                        R.string.fixed_chrono_warning_part_one
+                    )
                 )
 
                 Text(
-                    "Do not change the BB profile on the chronograph. " +
-                        "Select the actual BB profile only in ChronoMate."
+                    text = stringResource(
+                        R.string.fixed_chrono_warning_part_two
+                    )
                 )
 
                 Text(
-                    "ChronoMate will use the measured velocity and calculate " +
-                        "the correct energy using the actual BB weight selected " +
-                        "in the app.",
+                    text = stringResource(
+                        R.string.fixed_chrono_warning_part_three
+                    ),
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -693,7 +714,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                     showFixedChronoWarning = false
                 }
             ) {
-                Text("I understand, enable")
+                Text(stringResource(R.string.fixed_chrono_confirm))
             }
         },
         dismissButton = {
@@ -702,7 +723,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                     showFixedChronoWarning = false
                 }
             ) {
-                Text("Cancel")
+                Text(stringResource(R.string.fixed_chrono_cancel))
             }
         }
     )
@@ -732,7 +753,7 @@ var textFieldValue by remember(entry.controlValue, velocityUnit) {
         )
     )
 }
-    
+
     Row(
         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -743,7 +764,7 @@ var textFieldValue by remember(entry.controlValue, velocityUnit) {
             modifier = Modifier.weight(1f),
             style = MaterialTheme.typography.bodyMedium
         )
-        
+
         TextField(
             value = textFieldValue,
             onValueChange = {
@@ -759,7 +780,7 @@ var textFieldValue by remember(entry.controlValue, velocityUnit) {
                 unfocusedContainerColor = Color.Transparent
             )
         )
-        
+
         IconButton(onClick = onDelete) {
             Icon(Icons.Default.Close, contentDescription = "Delete", tint = MaterialTheme.colorScheme.outline)
         }
@@ -777,17 +798,17 @@ fun CustomWeightEntry(
     onDelete: () -> Unit
 ) {
     var nameText by remember(name) { mutableStateOf(name) }
-    var weightValue by remember(weight) { 
+    var weightValue by remember(weight) {
         mutableStateOf(TextFieldValue(
             text = weight.toString(),
             selection = TextRange(weight.toString().length)
-        )) 
+        ))
     }
-    var caliberValue by remember(caliber) { 
+    var caliberValue by remember(caliber) {
         mutableStateOf(TextFieldValue(
             text = caliber.toString(),
             selection = TextRange(caliber.toString().length)
-        )) 
+        ))
     }
     var unitExpanded by remember { mutableStateOf(false) }
     val units = listOf("mm", "inch", "cal", "ga")
@@ -796,7 +817,7 @@ fun CustomWeightEntry(
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextField(
                 value = nameText,
-                onValueChange = { 
+                onValueChange = {
                     nameText = it
                     onUpdate(it, weight, caliber, unit)
                 },
@@ -809,13 +830,13 @@ fun CustomWeightEntry(
                 Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
             }
         }
-        
+
         Spacer(modifier = Modifier.height(4.dp))
-        
+
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             TextField(
                 value = caliberValue,
-                onValueChange = { 
+                onValueChange = {
                     caliberValue = it
                     it.text.toFloatOrNull()?.let { c -> onUpdate(name, weight, c, unit) }
                 },
@@ -825,7 +846,7 @@ fun CustomWeightEntry(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 singleLine = true
             )
-            
+
             Box(modifier = Modifier.weight(0.6f)) {
                 OutlinedButton(
                     onClick = { unitExpanded = true },
@@ -849,12 +870,12 @@ fun CustomWeightEntry(
                 }
             }
         }
-        
+
         Spacer(modifier = Modifier.height(4.dp))
-        
+
         TextField(
             value = weightValue,
-            onValueChange = { 
+            onValueChange = {
                 weightValue = it
                 it.text.toFloatOrNull()?.let { w -> onUpdate(name, w, caliber, unit) }
             },
@@ -870,7 +891,7 @@ fun CustomWeightEntry(
 @Composable
 fun WeightTypeButton(label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     var resizedFontSize by remember { mutableStateOf(12.sp) }
-    
+
     Button(
         onClick = onClick,
         modifier = modifier.height(48.dp),
@@ -917,13 +938,13 @@ fun LanguageOption(label: String, code: String, currentCode: String, onClick: ()
 
 @Composable
 fun BallisticSettingField(label: String, value: String, onUpdate: (Float) -> Unit) {
-    var textFieldValue by remember(value) { 
+    var textFieldValue by remember(value) {
         mutableStateOf(TextFieldValue(
             text = value,
             selection = TextRange(value.length)
-        )) 
+        ))
     }
-    
+
     OutlinedTextField(
         value = textFieldValue,
         onValueChange = {
