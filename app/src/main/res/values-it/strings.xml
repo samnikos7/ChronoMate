@@ -137,4 +137,10 @@
     <string name="badge_waiting">NESSUN DATO - TOCCA</string>
     <string name="badge_offline">OFFLINE - TOCCA PER CONNETTERE</string>
     <string name="badge_failed">ERRORE - TOCCA PER RIPROVARE</string>
+
+    <!-- Velocity units -->
+    <string name="velocity_unit_title">Unità di velocità</string>
+    <string name="velocity_unit_description">Seleziona l\'unità di velocità utilizzata nell\'app</string>
+    <string name="velocity_unit_mps">Metri al secondo (m/s)</string>
+    <string name="velocity_unit_fps">Piedi al secondo (FPS)</string>
 </resources>

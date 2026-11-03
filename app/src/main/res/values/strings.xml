@@ -138,4 +138,9 @@
     <string name="badge_waiting">NO DATA - TAP TO RETRY</string>
     <string name="badge_offline">OFFLINE - TAP TO CONNECT</string>
     <string name="badge_failed">FAILED - TAP TO RETRY</string>
+    <!-- Velocity units -->
+    <string name="velocity_unit_title">Velocity Unit</string>
+    <string name="velocity_unit_description">Select the velocity unit used throughout the app</string>
+    <string name="velocity_unit_mps">Meters per second (m/s)</string>
+    <string name="velocity_unit_fps">Feet per second (FPS)</string>
 </resources>

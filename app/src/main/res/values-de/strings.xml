@@ -137,4 +137,10 @@
     <string name="badge_waiting">KEINE DATEN - TIPPEN</string>
     <string name="badge_offline">OFFLINE - ZUM VERBINDEN TIPPEN</string>
     <string name="badge_failed">FEHLER - ZUM WIEDERHOLEN TIPPEN</string>
+
+    <!-- Velocity units -->
+    <string name="velocity_unit_title">Geschwindigkeitseinheit</string>
+    <string name="velocity_unit_description">Wähle die Geschwindigkeitseinheit für die gesamte App</string>
+    <string name="velocity_unit_mps">Meter pro Sekunde (m/s)</string>
+    <string name="velocity_unit_fps">Fuß pro Sekunde (FPS)</string>
 </resources>

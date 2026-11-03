@@ -115,12 +115,12 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Velocity Unit",
+            text = stringResource(R.string.velocity_unit_title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )
         Text(
-            text = "Select the velocity unit used throughout the app",
+            text = stringResource(R.string.velocity_unit_description),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -143,7 +143,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                 onDismissRequest = { velocityUnitExpanded = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text("Meters per second (m/s)") },
+                    text = { Text(stringResource(R.string.velocity_unit_mps)) },
                     onClick = {
                         viewModel.setVelocityUnit(
                             context,
@@ -154,7 +154,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                 )
 
                 DropdownMenuItem(
-                    text = { Text("Feet per second (FPS)") },
+                    text = { Text(stringResource(R.string.velocity_unit_fps)) },
                     onClick = {
                         viewModel.setVelocityUnit(
                             context,
