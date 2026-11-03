@@ -123,6 +123,10 @@ class ChronoViewModel(context: Context) : ViewModel() {
             keepScreenOn = prefs.getBoolean("keep_screen_on", false),
             language = prefs.getString("language", "en") ?: "en",
             velocityUnit = velocityUnit,
+            fixedChronoProfileEnabled = prefs.getBoolean("fixed_chrono_profile_enabled", false),
+            chronoOutputUnit = runCatching {VelocityUnit.valueOf(prefs.getString("chrono_output_unit",VelocityUnit.METERS_PER_SECOND.name) ?: VelocityUnit.METERS_PER_SECOND.name)}.getOrDefault(VelocityUnit.METERS_PER_SECOND),
+            fixedChronoWeightGrams =prefs.getFloat("fixed_chrono_weight_grams", 0.20f),
+            fixedChronoDiameterMm =prefs.getFloat("fixed_chrono_diameter_mm", 6.0f),
             maxAllowedJoule = prefs.getFloat("max_joule", 1.5f),
             maxAllowedOverhopCm = prefs.getFloat("max_overhop", 15f),
             weightType = WeightType.valueOf(prefs.getString("weight_type", WeightType.BB.name) ?: WeightType.BB.name),
@@ -175,6 +179,35 @@ class ChronoViewModel(context: Context) : ViewModel() {
         _uiState.update { it.copy(velocityUnit = unit) }
         savePreference(context, "velocity_unit", unit.name)
     }
+
+    fun setFixedChronoProfileEnabled(context: Context,enabled: Boolean) {
+        _uiState.update {it.copy(fixedChronoProfileEnabled = enabled)}
+        savePreference(context,"fixed_chrono_profile_enabled",enabled)
+    }
+
+    fun setChronoOutputUnit(context: Context,unit: VelocityUnit) {
+        _uiState.update {it.copy(chronoOutputUnit = unit)}
+        savePreference(context,"chrono_output_unit",unit.name)
+    }
+
+    fun setFixedChronoWeight(context: Context,weightGrams: Float) {
+    val validWeight = weightGrams.coerceIn(0.01f, 10.0f)
+
+        _uiState.update {it.copy(fixedChronoWeightGrams = validWeight)}
+        savePreference(context,"fixed_chrono_weight_grams",validWeight)
+    }
+
+    fun setFixedChronoDiameter(context: Context,diameterMm: Float) {
+    val validDiameter = diameterMm.coerceIn(1.0f, 20.0f)
+
+    _uiState.update {
+        it.copy(fixedChronoDiameterMm = validDiameter)
+    }
+    savePreference(
+        context,
+        "fixed_chrono_diameter_mm",
+        validDiameter
+    )}
 
     fun toggleDarkMode(context: Context, enabled: Boolean) {
         _uiState.update { it.copy(isDarkMode = enabled) }
@@ -649,8 +682,11 @@ class ChronoViewModel(context: Context) : ViewModel() {
                 }
                 
                 newShotsToAdd.forEach { rawVelocity ->
+                    val inputUnit = if (current.fixedChronoProfileEnabled) {current.chronoOutputUnit}
+                    else {current.velocityUnit}
+
                     val velocityMps =
-                        current.velocityUnit.toMetersPerSecond(rawVelocity)
+                    inputUnit.toMetersPerSecond(rawVelocity)
 
                     currentSessionShots.add(
                         Shot(

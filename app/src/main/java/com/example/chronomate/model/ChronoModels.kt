@@ -96,7 +96,15 @@ data class ChronoData(
     val isDarkMode: Boolean = true,
     val keepScreenOn: Boolean = false,
     val language: String = "en",
+
+    // Display unit used throughout ChronoMate
     val velocityUnit: VelocityUnit = VelocityUnit.METERS_PER_SECOND,
+
+    // Fixed chronograph profile
+    val fixedChronoProfileEnabled: Boolean = false,
+    val chronoOutputUnit: VelocityUnit = VelocityUnit.METERS_PER_SECOND,
+    val fixedChronoWeightGrams: Float = 0.20f,
+    val fixedChronoDiameterMm: Float = 6.0f,
     val maxAllowedJoule: Float = 1.5f,
     val maxAllowedOverhopCm: Float = 15.0f,
     

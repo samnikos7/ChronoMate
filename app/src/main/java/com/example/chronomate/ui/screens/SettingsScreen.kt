@@ -42,7 +42,8 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
     var showLanguageDialog by remember { mutableStateOf(false) }
     var weightsExpanded by remember { mutableStateOf(false) }
     var calibrationExpanded by remember { mutableStateOf(false) }
-    
+    var showFixedChronoWarning by remember {mutableStateOf(false)}
+
     val languages = remember {
         listOf(
             Triple("English", "en", "English"),
@@ -200,6 +201,202 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                         chronoExpanded = false 
                     }
                 )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Fixed Chronograph Profile",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = "Keep one profile locked on the chronograph and select the actual BB only in ChronoMate.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Use fixed chronograph profile",
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Text(
+                    text = if (data.fixedChronoProfileEnabled) "Enabled" else "Disabled",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (data.fixedChronoProfileEnabled) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    }
+                )
+            }
+
+            Switch(
+                checked = data.fixedChronoProfileEnabled,
+                onCheckedChange = { enabled ->
+                    if (enabled) {
+                        showFixedChronoWarning = true
+                    } else {
+                        viewModel.setFixedChronoProfileEnabled(context, false)
+                    }
+                }
+            )
+        }
+
+        if (data.fixedChronoProfileEnabled) {
+            var chronoOutputUnitExpanded by remember {
+                mutableStateOf(false)
+            }
+
+            var fixedWeightText by remember(data.fixedChronoWeightGrams) {
+                val value = "%.2f".format(data.fixedChronoWeightGrams)
+                mutableStateOf(
+                    TextFieldValue(
+                        text = value,
+                        selection = TextRange(value.length)
+                    )
+                )
+            }
+
+            var fixedDiameterText by remember(data.fixedChronoDiameterMm) {
+                val value = "%.2f".format(data.fixedChronoDiameterMm)
+                mutableStateOf(
+                    TextFieldValue(
+                        text = value,
+                        selection = TextRange(value.length)
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                )
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "Chronograph output unit",
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                    Text(
+                        text = "Select the unit currently configured on the chronograph.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        OutlinedButton(
+                            onClick = { chronoOutputUnitExpanded = true },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(data.chronoOutputUnit.symbol)
+                            Icon(
+                                imageVector = Icons.Default.ArrowDropDown,
+                                contentDescription = null
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = chronoOutputUnitExpanded,
+                            onDismissRequest = { chronoOutputUnitExpanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Meters per second (m/s)") },
+                                onClick = {
+                                    viewModel.setChronoOutputUnit(
+                                        context,
+                                        VelocityUnit.METERS_PER_SECOND
+                                    )
+                                    chronoOutputUnitExpanded = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Feet per second (FPS)") },
+                                onClick = {
+                                    viewModel.setChronoOutputUnit(
+                                        context,
+                                        VelocityUnit.FEET_PER_SECOND
+                                    )
+                                    chronoOutputUnitExpanded = false
+                                }
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = fixedWeightText,
+                            onValueChange = { newValue ->
+                                fixedWeightText = newValue
+                                newValue.text
+                                    .replace(',', '.')
+                                    .toFloatOrNull()
+                                    ?.let { weight ->
+                                        viewModel.setFixedChronoWeight(context, weight)
+                                    }
+                            },
+                            label = { Text("Locked weight") },
+                            suffix = { Text("g") },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Decimal
+                            ),
+                            singleLine = true,
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        OutlinedTextField(
+                            value = fixedDiameterText,
+                            onValueChange = { newValue ->
+                                fixedDiameterText = newValue
+                                newValue.text
+                                    .replace(',', '.')
+                                    .toFloatOrNull()
+                                    ?.let { diameter ->
+                                        viewModel.setFixedChronoDiameter(context, diameter)
+                                    }
+                            },
+                            label = { Text("Locked diameter") },
+                            suffix = { Text("mm") },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Decimal
+                            ),
+                            singleLine = true,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = "Chronograph profile: %.2f g / %.2f mm / %s".format(
+                            data.fixedChronoWeightGrams,
+                            data.fixedChronoDiameterMm,
+                            data.chronoOutputUnit.symbol
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
 
@@ -448,6 +645,68 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
             }
         )
     }
+    if (showFixedChronoWarning) {
+    AlertDialog(
+        onDismissRequest = {
+            showFixedChronoWarning = false
+        },
+        icon = {
+            Icon(
+                imageVector = Icons.Default.Warning,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error
+            )
+        },
+        title = {
+            Text("Fixed Chronograph Profile")
+        },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    "When this feature is enabled, keep the chronograph " +
+                        "locked to the configured weight, diameter and " +
+                        "output unit."
+                )
+
+                Text(
+                    "Do not change the BB profile on the chronograph. " +
+                        "Select the actual BB profile only in ChronoMate."
+                )
+
+                Text(
+                    "ChronoMate will use the measured velocity and calculate " +
+                        "the correct energy using the actual BB weight selected " +
+                        "in the app.",
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    viewModel.setFixedChronoProfileEnabled(
+                        context,
+                        true
+                    )
+                    showFixedChronoWarning = false
+                }
+            ) {
+                Text("I understand, enable")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    showFixedChronoWarning = false
+                }
+            ) {
+                Text("Cancel")
+            }
+        }
+    )
+}
 }
 
 @Composable
