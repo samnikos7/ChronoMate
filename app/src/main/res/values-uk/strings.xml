@@ -143,4 +143,21 @@
     <string name="velocity_unit_description">Виберіть одиницю швидкості, що використовується в застосунку</string>
     <string name="velocity_unit_mps">Метри за секунду (m/s)</string>
     <string name="velocity_unit_fps">Фути за секунду (FPS)</string>
+
+    <!-- Fixed chronograph profile -->
+    <string name="fixed_chrono_title">Фіксований профіль хронографа</string>
+    <string name="fixed_chrono_description">Залиште один профіль зафіксованим у хронографі та вибирайте фактичну кульку лише в ChronoMate.</string>
+    <string name="fixed_chrono_toggle">Використовувати фіксований профіль хронографа</string>
+    <string name="fixed_chrono_enabled">Увімкнено</string>
+    <string name="fixed_chrono_disabled">Вимкнено</string>
+    <string name="fixed_chrono_output_unit">Одиниця вихідних даних хронографа</string>
+    <string name="fixed_chrono_output_unit_description">Виберіть одиницю, яка зараз налаштована у хронографі.</string>
+    <string name="fixed_chrono_locked_weight">Зафіксована вага</string>
+    <string name="fixed_chrono_locked_diameter">Зафіксований діаметр</string>
+    <string name="fixed_chrono_profile_summary">Профіль хронографа: %1$.2f г / %2$.2f мм / %3$s</string>
+    <string name="fixed_chrono_warning_part_one">Коли цю функцію ввімкнено, хронограф має залишатися налаштованим на задану вагу, діаметр і одиницю вихідних даних.</string>
+    <string name="fixed_chrono_warning_part_two">Не змінюйте профіль кульки у хронографі. Вибирайте фактичний профіль кульки лише в ChronoMate.</string>
+    <string name="fixed_chrono_warning_part_three">ChronoMate використає виміряну швидкість і обчислить правильну енергію за фактичною вагою кульки, вибраною в застосунку.</string>
+    <string name="fixed_chrono_confirm">Розумію, увімкнути</string>
+    <string name="fixed_chrono_cancel">Скасувати</string>
 </resources>

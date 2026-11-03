@@ -143,4 +143,21 @@
     <string name="velocity_unit_description">Välj hastighetsenheten som används i hela appen</string>
     <string name="velocity_unit_mps">Meter per sekund (m/s)</string>
     <string name="velocity_unit_fps">Fot per sekund (FPS)</string>
+
+    <!-- Fixed chronograph profile -->
+    <string name="fixed_chrono_title">Fast kronografprofil</string>
+    <string name="fixed_chrono_description">Behåll en profil låst på kronografen och välj endast den faktiska BB-kulan i ChronoMate.</string>
+    <string name="fixed_chrono_toggle">Använd fast kronografprofil</string>
+    <string name="fixed_chrono_enabled">Aktiverad</string>
+    <string name="fixed_chrono_disabled">Inaktiverad</string>
+    <string name="fixed_chrono_output_unit">Kronografens utdataenhet</string>
+    <string name="fixed_chrono_output_unit_description">Välj enheten som för närvarande är inställd på kronografen.</string>
+    <string name="fixed_chrono_locked_weight">Låst vikt</string>
+    <string name="fixed_chrono_locked_diameter">Låst diameter</string>
+    <string name="fixed_chrono_profile_summary">Kronografprofil: %1$.2f g / %2$.2f mm / %3$s</string>
+    <string name="fixed_chrono_warning_part_one">När funktionen är aktiverad måste kronografen förbli låst till konfigurerad vikt, diameter och utdataenhet.</string>
+    <string name="fixed_chrono_warning_part_two">Ändra inte BB-profilen på kronografen. Välj den faktiska BB-profilen endast i ChronoMate.</string>
+    <string name="fixed_chrono_warning_part_three">ChronoMate använder den uppmätta hastigheten och beräknar korrekt energi med den faktiska BB-vikten som valts i appen.</string>
+    <string name="fixed_chrono_confirm">Jag förstår, aktivera</string>
+    <string name="fixed_chrono_cancel">Avbryt</string>
 </resources>

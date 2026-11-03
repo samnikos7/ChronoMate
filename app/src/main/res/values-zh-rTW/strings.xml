@@ -143,4 +143,21 @@
     <string name="velocity_unit_description">選擇整個應用程式使用的速度單位</string>
     <string name="velocity_unit_mps">公尺每秒 (m/s)</string>
     <string name="velocity_unit_fps">英尺每秒 (FPS)</string>
+
+    <!-- Fixed chronograph profile -->
+    <string name="fixed_chrono_title">固定測速器設定檔</string>
+    <string name="fixed_chrono_description">將測速器鎖定為一個設定檔，僅在 ChronoMate 中選擇實際使用的 BB 彈。</string>
+    <string name="fixed_chrono_toggle">使用固定測速器設定檔</string>
+    <string name="fixed_chrono_enabled">已啟用</string>
+    <string name="fixed_chrono_disabled">已停用</string>
+    <string name="fixed_chrono_output_unit">測速器輸出單位</string>
+    <string name="fixed_chrono_output_unit_description">選擇測速器目前設定的單位。</string>
+    <string name="fixed_chrono_locked_weight">鎖定重量</string>
+    <string name="fixed_chrono_locked_diameter">鎖定直徑</string>
+    <string name="fixed_chrono_profile_summary">測速器設定檔: %1$.2f g / %2$.2f mm / %3$s</string>
+    <string name="fixed_chrono_warning_part_one">啟用此功能後，請保持測速器鎖定為已設定的重量、直徑和輸出單位。</string>
+    <string name="fixed_chrono_warning_part_two">請勿更改測速器上的 BB 彈設定檔。僅在 ChronoMate 中選擇實際使用的 BB 彈設定檔。</string>
+    <string name="fixed_chrono_warning_part_three">ChronoMate 將使用測得的速度，並根據應用程式中選擇的實際 BB 彈重量計算正確的能量。</string>
+    <string name="fixed_chrono_confirm">我已了解，啟用</string>
+    <string name="fixed_chrono_cancel">取消</string>
 </resources>

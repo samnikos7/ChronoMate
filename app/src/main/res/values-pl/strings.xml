@@ -143,4 +143,21 @@
     <string name="velocity_unit_description">Wybierz jednostkę prędkości używaną w całej aplikacji</string>
     <string name="velocity_unit_mps">Metri na sekundę (m/s)</string>
     <string name="velocity_unit_fps">Stopy na sekundę (FPS)</string>
+
+    <!-- Fixed chronograph profile -->
+    <string name="fixed_chrono_title">Stały profil chronografu</string>
+    <string name="fixed_chrono_description">Pozostaw jeden profil zablokowany w chronografie i wybieraj rzeczywistą kulkę tylko w ChronoMate.</string>
+    <string name="fixed_chrono_toggle">Użyj stałego profilu chronografu</string>
+    <string name="fixed_chrono_enabled">Włączone</string>
+    <string name="fixed_chrono_disabled">Wyłączone</string>
+    <string name="fixed_chrono_output_unit">Jednostka wyjściowa chronografu</string>
+    <string name="fixed_chrono_output_unit_description">Wybierz jednostkę ustawioną obecnie w chronografie.</string>
+    <string name="fixed_chrono_locked_weight">Zablokowana masa</string>
+    <string name="fixed_chrono_locked_diameter">Zablokowana średnica</string>
+    <string name="fixed_chrono_profile_summary">Profil chronografu: %1$.2f g / %2$.2f mm / %3$s</string>
+    <string name="fixed_chrono_warning_part_one">Po włączeniu tej funkcji chronograf musi pozostać ustawiony na skonfigurowaną masę, średnicę i jednostkę wyjściową.</string>
+    <string name="fixed_chrono_warning_part_two">Nie zmieniaj profilu kulki w chronografie. Rzeczywisty profil kulki wybieraj tylko w ChronoMate.</string>
+    <string name="fixed_chrono_warning_part_three">ChronoMate użyje zmierzonej prędkości i obliczy prawidłową energię na podstawie rzeczywistej masy kulki wybranej w aplikacji.</string>
+    <string name="fixed_chrono_confirm">Rozumiem, włącz</string>
+    <string name="fixed_chrono_cancel">Anuluj</string>
 </resources>

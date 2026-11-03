@@ -143,4 +143,21 @@
     <string name="velocity_unit_description">Selecteer de snelheidseenheid die in de app wordt gebruikt</string>
     <string name="velocity_unit_mps">Meter per seconde (m/s)</string>
     <string name="velocity_unit_fps">Voet per seconde (FPS)</string>
+
+    <!-- Fixed chronograph profile -->
+    <string name="fixed_chrono_title">Vast chronograafprofiel</string>
+    <string name="fixed_chrono_description">Houd één profiel vergrendeld op de chronograaf en selecteer de werkelijke BB alleen in ChronoMate.</string>
+    <string name="fixed_chrono_toggle">Vast chronograafprofiel gebruiken</string>
+    <string name="fixed_chrono_enabled">Ingeschakeld</string>
+    <string name="fixed_chrono_disabled">Uitgeschakeld</string>
+    <string name="fixed_chrono_output_unit">Uitvoereenheid van chronograaf</string>
+    <string name="fixed_chrono_output_unit_description">Selecteer de eenheid die momenteel op de chronograaf is ingesteld.</string>
+    <string name="fixed_chrono_locked_weight">Vast gewicht</string>
+    <string name="fixed_chrono_locked_diameter">Vaste diameter</string>
+    <string name="fixed_chrono_profile_summary">Chronograafprofiel: %1$.2f g / %2$.2f mm / %3$s</string>
+    <string name="fixed_chrono_warning_part_one">Wanneer deze functie is ingeschakeld, moet de chronograaf ingesteld blijven op het geconfigureerde gewicht, de diameter en de uitvoereenheid.</string>
+    <string name="fixed_chrono_warning_part_two">Wijzig het BB-profiel niet op de chronograaf. Selecteer het werkelijke BB-profiel alleen in ChronoMate.</string>
+    <string name="fixed_chrono_warning_part_three">ChronoMate gebruikt de gemeten snelheid en berekent de juiste energie met het werkelijke BB-gewicht dat in de app is geselecteerd.</string>
+    <string name="fixed_chrono_confirm">Begrepen, inschakelen</string>
+    <string name="fixed_chrono_cancel">Annuleren</string>
 </resources>

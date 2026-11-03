@@ -154,7 +154,7 @@
     <string name="fixed_chrono_output_unit_description">Select the unit currently configured on the chronograph.</string>
     <string name="fixed_chrono_locked_weight">Locked weight</string>
     <string name="fixed_chrono_locked_diameter">Locked diameter</string>
-    <string name="fixed_chrono_profile_summary">Chronograph profile: %.2f g / %.2f mm / %s</string>
+    <string name="fixed_chrono_profile_summary">Chronograph profile: %1$.2f g / %2$.2f mm / %3$s</string>
     <string name="fixed_chrono_warning_part_one">When this feature is enabled, keep the chronograph locked to the configured weight, diameter and output unit.</string>
     <string name="fixed_chrono_warning_part_two">Do not change the BB profile on the chronograph. Select the actual BB profile only in ChronoMate.</string>
     <string name="fixed_chrono_warning_part_three">ChronoMate will use the measured velocity and calculate the correct energy using the actual BB weight selected in the app.</string>

@@ -143,4 +143,21 @@
     <string name="velocity_unit_description">Wähle die Geschwindigkeitseinheit für die gesamte App</string>
     <string name="velocity_unit_mps">Meter pro Sekunde (m/s)</string>
     <string name="velocity_unit_fps">Fuß pro Sekunde (FPS)</string>
+
+    <!-- Fixed chronograph profile -->
+    <string name="fixed_chrono_title">Festes Chronographenprofil</string>
+    <string name="fixed_chrono_description">Lasse ein Profil am Chronographen gesperrt und wähle die tatsächliche BB nur in ChronoMate aus.</string>
+    <string name="fixed_chrono_toggle">Festes Chronographenprofil verwenden</string>
+    <string name="fixed_chrono_enabled">Aktiviert</string>
+    <string name="fixed_chrono_disabled">Deaktiviert</string>
+    <string name="fixed_chrono_output_unit">Ausgabeeinheit des Chronographen</string>
+    <string name="fixed_chrono_output_unit_description">Wähle die Einheit, die derzeit am Chronographen eingestellt ist.</string>
+    <string name="fixed_chrono_locked_weight">Festes Gewicht</string>
+    <string name="fixed_chrono_locked_diameter">Fester Durchmesser</string>
+    <string name="fixed_chrono_profile_summary">Chronographenprofil: %1$.2f g / %2$.2f mm / %3$s</string>
+    <string name="fixed_chrono_warning_part_one">Wenn diese Funktion aktiviert ist, muss der Chronograph auf das konfigurierte Gewicht, den Durchmesser und die Ausgabeeinheit eingestellt bleiben.</string>
+    <string name="fixed_chrono_warning_part_two">Ändere das BB-Profil nicht am Chronographen. Wähle das tatsächliche BB-Profil nur in ChronoMate aus.</string>
+    <string name="fixed_chrono_warning_part_three">ChronoMate verwendet die gemessene Geschwindigkeit und berechnet die korrekte Energie anhand des in der App gewählten tatsächlichen BB-Gewichts.</string>
+    <string name="fixed_chrono_confirm">Verstanden, aktivieren</string>
+    <string name="fixed_chrono_cancel">Abbrechen</string>
 </resources>

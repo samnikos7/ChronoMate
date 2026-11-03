@@ -143,4 +143,21 @@
     <string name="velocity_unit_description">アプリ全体で使用する速度単位を選択します</string>
     <string name="velocity_unit_mps">メートル毎秒 (m/s)</string>
     <string name="velocity_unit_fps">フィート毎秒 (FPS)</string>
+
+    <!-- Fixed chronograph profile -->
+    <string name="fixed_chrono_title">クロノグラフ固定プロファイル</string>
+    <string name="fixed_chrono_description">クロノグラフでは1つのプロファイルを固定し、実際のBB弾はChronoMateでのみ選択します。</string>
+    <string name="fixed_chrono_toggle">クロノグラフ固定プロファイルを使用</string>
+    <string name="fixed_chrono_enabled">有効</string>
+    <string name="fixed_chrono_disabled">無効</string>
+    <string name="fixed_chrono_output_unit">クロノグラフ出力単位</string>
+    <string name="fixed_chrono_output_unit_description">クロノグラフで現在設定されている単位を選択します。</string>
+    <string name="fixed_chrono_locked_weight">固定重量</string>
+    <string name="fixed_chrono_locked_diameter">固定直径</string>
+    <string name="fixed_chrono_profile_summary">クロノグラフプロファイル: %1$.2f g / %2$.2f mm / %3$s</string>
+    <string name="fixed_chrono_warning_part_one">この機能を有効にした場合、クロノグラフの重量、直径、出力単位を設定した値から変更しないでください。</string>
+    <string name="fixed_chrono_warning_part_two">クロノグラフ側のBB弾プロファイルを変更せず、実際のBB弾プロファイルはChronoMateでのみ選択してください。</string>
+    <string name="fixed_chrono_warning_part_three">ChronoMateは測定した速度とアプリで選択した実際のBB弾重量を使用して、正しいエネルギーを計算します。</string>
+    <string name="fixed_chrono_confirm">理解して有効にする</string>
+    <string name="fixed_chrono_cancel">キャンセル</string>
 </resources>

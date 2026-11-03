@@ -143,4 +143,21 @@
     <string name="velocity_unit_description">Selecciona la unidad de velocidad utilizada en toda la aplicación</string>
     <string name="velocity_unit_mps">Metros por segundo (m/s)</string>
     <string name="velocity_unit_fps">Pies por segundo (FPS)</string>
+
+    <!-- Fixed chronograph profile -->
+    <string name="fixed_chrono_title">Perfil fijo del cronógrafo</string>
+    <string name="fixed_chrono_description">Mantén un perfil bloqueado en el cronógrafo y selecciona la BB real únicamente en ChronoMate.</string>
+    <string name="fixed_chrono_toggle">Usar perfil fijo del cronógrafo</string>
+    <string name="fixed_chrono_enabled">Activado</string>
+    <string name="fixed_chrono_disabled">Desactivado</string>
+    <string name="fixed_chrono_output_unit">Unidad de salida del cronógrafo</string>
+    <string name="fixed_chrono_output_unit_description">Selecciona la unidad configurada actualmente en el cronógrafo.</string>
+    <string name="fixed_chrono_locked_weight">Peso bloqueado</string>
+    <string name="fixed_chrono_locked_diameter">Diámetro bloqueado</string>
+    <string name="fixed_chrono_profile_summary">Perfil del cronógrafo: %1$.2f g / %2$.2f mm / %3$s</string>
+    <string name="fixed_chrono_warning_part_one">Cuando esta función esté activada, mantén el cronógrafo bloqueado en el peso, diámetro y unidad de salida configurados.</string>
+    <string name="fixed_chrono_warning_part_two">No cambies el perfil de BB en el cronógrafo. Selecciona el perfil de BB real únicamente en ChronoMate.</string>
+    <string name="fixed_chrono_warning_part_three">ChronoMate utilizará la velocidad medida y calculará la energía correcta con el peso real de la BB seleccionado en la aplicación.</string>
+    <string name="fixed_chrono_confirm">Entiendo, activar</string>
+    <string name="fixed_chrono_cancel">Cancelar</string>
 </resources>
