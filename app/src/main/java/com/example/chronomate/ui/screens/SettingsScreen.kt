@@ -296,6 +296,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                                 val realIndex = data.calibrationEntries.size - 1 - index
                                 CalibrationRow(
                                     entry = entry,
+                                    velocityUnit = data.velocityUnit,
                                     onUpdateControl = { viewModel.updateCalibrationControlValue(context, realIndex, it) },
                                     onDelete = { viewModel.removeCalibrationEntry(context, realIndex) }
                                 )
@@ -452,15 +453,26 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
 @Composable
 fun CalibrationRow(
     entry: CalibrationEntry,
+    velocityUnit: VelocityUnit,
     onUpdateControl: (Float?) -> Unit,
     onDelete: () -> Unit
 ) {
-    var textFieldValue by remember(entry.controlValue) { 
-        mutableStateOf(TextFieldValue(
-            text = entry.controlValue?.toString() ?: "",
-            selection = TextRange(entry.controlValue?.toString()?.length ?: 0)
-        )) 
-    }
+    val displayedControlValue = entry.controlValue?.let {
+    velocityUnit.fromMetersPerSecond(it)
+}
+
+val displayedControlText = displayedControlValue?.let {
+    "%.1f".format(it)
+} ?: ""
+
+var textFieldValue by remember(entry.controlValue, velocityUnit) {
+    mutableStateOf(
+        TextFieldValue(
+            text = displayedControlText,
+            selection = TextRange(displayedControlText.length)
+        )
+    )
+}
     
     Row(
         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
@@ -468,7 +480,7 @@ fun CalibrationRow(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "%.1f".format(entry.chronoValue),
+            text = "%.1f".format(velocityUnit.fromMetersPerSecond(entry.chronoValue)),
             modifier = Modifier.weight(1f),
             style = MaterialTheme.typography.bodyMedium
         )
@@ -477,7 +489,7 @@ fun CalibrationRow(
             value = textFieldValue,
             onValueChange = {
                 textFieldValue = it
-                onUpdateControl(it.text.toFloatOrNull())
+                onUpdateControl(it.text.toFloatOrNull()?.let { displayedValue ->velocityUnit.toMetersPerSecond(displayedValue)})
             },
             modifier = Modifier.weight(1f).height(48.dp),
             textStyle = MaterialTheme.typography.bodySmall,

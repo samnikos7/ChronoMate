@@ -171,7 +171,7 @@ fun OrgaHeroSection(data: ChronoData, practicalWeight: Float, sparePercentage: F
                 color = contentColor.copy(alpha = 0.6f)
             )
             Text(
-                text = data.velocity + " m/s",
+                text = data.velocity.toFloatOrNull()?.let { data.velocityUnit.fromMetersPerSecond(it) }?.let { "%.1f %s".format(it, data.velocityUnit.symbol) }?: "0.0 ${data.velocityUnit.symbol}",
                 fontSize = 48.sp,
                 color = contentColor,
                 fontWeight = FontWeight.Black

@@ -411,7 +411,7 @@ fun BallisticsScreen(data: ChronoData, viewModel: ChronoViewModel) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(stringResource(R.string.speed_label).format(speedMps), style = MaterialTheme.typography.labelMedium)
+                Text(text = "%.1f %s".format(data.velocityUnit.fromMetersPerSecond(speedMps.toFloat()),data.velocityUnit.symbol),style = MaterialTheme.typography.labelMedium)
                 Slider(
                     value = speedMps.toFloat(), 
                     onValueChange = { speedMps = it.toDouble() }, 

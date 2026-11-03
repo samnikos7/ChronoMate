@@ -103,7 +103,7 @@ fun DashboardScreen(data: ChronoData, viewModel: ChronoViewModel) {
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
-                    ShotChart(shots = data.shots, modifier = Modifier.height(250.dp).fillMaxWidth())
+                    ShotChart(shots = data.shots,velocityUnit = data.velocityUnit,modifier = Modifier.height(250.dp).fillMaxWidth())
                 }
             }
         } else {
@@ -120,7 +120,7 @@ fun DashboardScreen(data: ChronoData, viewModel: ChronoViewModel) {
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
-                    ShotChart(shots = data.shots, modifier = Modifier.height(200.dp).fillMaxWidth())
+                    ShotChart(shots = data.shots,velocityUnit = data.velocityUnit,modifier = Modifier.height(200.dp).fillMaxWidth())
                 } else {
                     Box(modifier = Modifier.height(100.dp).fillMaxWidth(), contentAlignment = Alignment.Center) {
                         Text(stringResource(R.string.no_shots_yet), color = MaterialTheme.colorScheme.onSurfaceVariant)

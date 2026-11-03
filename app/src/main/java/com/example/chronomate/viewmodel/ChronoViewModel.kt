@@ -766,7 +766,7 @@ class ChronoViewModel(context: Context) : ViewModel() {
                     val col2 = 230f
                     val col3 = 420f
 
-                    val velocities = shotsToExport.map { it.velocity }
+                    val velocities = shotsToExport.map {data.velocityUnit.fromMetersPerSecond(it.velocity)}
                     val avg = velocities.average().toFloat()
                     val max = velocities.maxOrNull() ?: 0f
                     val min = velocities.minOrNull() ?: 0f
@@ -775,13 +775,13 @@ class ChronoViewModel(context: Context) : ViewModel() {
                     val varVal = if (velocities.size > 1) velocities.sumOf { (it - mean).pow(2.0) }.toFloat() / velocities.size else 0f
                     val sd = sqrt(varVal)
 
-                    currentCanvas.drawText("${context.getString(R.string.stat_average)}: %.1f m/s".format(avg), col1, y, bodyPaint)
-                    currentCanvas.drawText("${context.getString(R.string.stat_max)}: %.1f m/s".format(max), col2, y, bodyPaint)
-                    currentCanvas.drawText("${context.getString(R.string.stat_min)}: %.1f m/s".format(min), col3, y, bodyPaint)
+                    currentCanvas.drawText("${context.getString(R.string.stat_average)}: %.1f %s".format(data.velocityUnit.fromMetersPerSecond(avg),data.velocityUnit.symbol),col1,y,bodyPaint)
+                    currentCanvas.drawText("${context.getString(R.string.stat_max)}: %.1f %s".format(data.velocityUnit.fromMetersPerSecond(max),data.velocityUnit.symbol),col2,y,bodyPaint)
+                    currentCanvas.drawText("${context.getString(R.string.stat_min)}: %.1f %s".format(data.velocityUnit.fromMetersPerSecond(min),data.velocityUnit.symbol),col3,y,bodyPaint)
 
                     y += 25f
-                    currentCanvas.drawText("${context.getString(R.string.stat_es)}: %.1f m/s".format(es), col1, y, bodyPaint)
-                    currentCanvas.drawText("${context.getString(R.string.stat_sd)}: %.2f m/s".format(sd), col2, y, bodyPaint)
+                    currentCanvas.drawText("${context.getString(R.string.stat_es)}: %.1f %s".format(data.velocityUnit.fromMetersPerSecond(es),data.velocityUnit.symbol),col1,y,bodyPaint)
+                    currentCanvas.drawText("${context.getString(R.string.stat_sd)}: %.2f %s".format(data.velocityUnit.fromMetersPerSecond(sd),data.velocityUnit.symbol),col2,y,bodyPaint)
                     currentCanvas.drawText("${context.getString(R.string.stat_rof)}: ${data.fireRate} r/m", col3, y, bodyPaint)
 
                     // Graph Section
@@ -810,7 +810,7 @@ class ChronoViewModel(context: Context) : ViewModel() {
                     // Draw Chart Axis Labels
                     currentCanvas.drawText("%.1f".format(displayMax), graphLeft - 5f, graphTop + 10f, labelPaint.apply { textAlign = Paint.Align.RIGHT })
                     currentCanvas.drawText("%.1f".format(displayMin), graphLeft - 5f, graphTop + graphHeight, labelPaint)
-                    currentCanvas.drawText("m/s", graphLeft - 5f, graphTop - 5f, labelPaint)
+                    currentCanvas.drawText(data.velocityUnit.symbol,graphLeft - 5f,graphTop - 5f,labelPaint)
                     currentCanvas.drawText("SHOT #", graphLeft + graphWidth/2, graphTop + graphHeight + 25f, labelPaint.apply { textAlign = Paint.Align.CENTER })
 
                     // Draw Average Line (Orange)
@@ -832,7 +832,9 @@ class ChronoViewModel(context: Context) : ViewModel() {
 
                     shotsToExport.forEachIndexed { index, shot ->
                         val x = graphLeft + (index.toFloat() / (shotsToExport.size - 1).coerceAtLeast(1)) * graphWidth
-                        val py = graphTop + graphHeight - ((shot.velocity - displayMin) / displayRange) * graphHeight
+                        val displayedVelocity = data.velocityUnit.fromMetersPerSecond(shot.velocity)
+
+                        val py = graphTop + graphHeight - ((displayedVelocity - displayMin) / displayRange) * graphHeight
 
                         if (index == 0) path.moveTo(x, py) else path.lineTo(x, py)
                         currentCanvas.drawCircle(x, py, 3f, Paint().apply { color = Color.parseColor("#2E7D32") })
@@ -874,7 +876,7 @@ class ChronoViewModel(context: Context) : ViewModel() {
                         val shotNum = (data.shots.size - shotsToExport.size) + index + 1
                         currentCanvas.drawText("%02d".format(shotNum), 50f, y, bodyPaint)
                         currentCanvas.drawText("%.2f".format(shot.weightGrams), 100f, y, bodyPaint)
-                        currentCanvas.drawText("%.1f".format(shot.velocity), 250f, y, bodyPaint)
+                        currentCanvas.drawText("%.1f".format(data.velocityUnit.fromMetersPerSecond(shot.velocity)),250f,y,bodyPaint)
                         currentCanvas.drawText("%.2f".format(shot.energyJoules), 450f, y, bodyPaint)
                         y += 20f
                     }

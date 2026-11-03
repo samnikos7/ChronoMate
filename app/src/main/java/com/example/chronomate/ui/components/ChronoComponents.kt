@@ -1,5 +1,6 @@
 package com.example.chronomate.ui.components
 
+import com.example.chronomate.model.VelocityUnit
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -118,11 +119,12 @@ fun StatItem(label: String, value: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ShotChart(shots: List<Shot>, modifier: Modifier = Modifier) {
+fun ShotChart(shots: List<Shot>, velocityUnit: VelocityUnit, modifier: Modifier = Modifier) {
     if (shots.isEmpty()) return
     
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
-    val velocities = shots.map { it.velocity }
+    val velocities = shots.map { velocityUnit.fromMetersPerSecond(it.velocity) }
+
     val avgVel = velocities.average().toFloat()
     val minVel = velocities.minOrNull() ?: 0f
     val maxVel = velocities.maxOrNull() ?: 0f
@@ -154,7 +156,7 @@ fun ShotChart(shots: List<Shot>, modifier: Modifier = Modifier) {
             
             // Draw Axis Labels
             drawContext.canvas.nativeCanvas.drawText(
-                "m/s",
+                velocityUnit.symbol,
                 -35.dp.toPx(),
                 -5.dp.toPx(),
                 android.graphics.Paint().apply {
@@ -207,7 +209,8 @@ fun ShotChart(shots: List<Shot>, modifier: Modifier = Modifier) {
 
             val points = shots.mapIndexed { index, shot ->
                 val x = index * xStep
-                val normalizedY = (shot.velocity - displayMin) / displayRange
+                val displayedVelocity = velocityUnit.fromMetersPerSecond(shot.velocity)
+                val normalizedY = (displayedVelocity - displayMin) / displayRange
                 val y = size.height - (normalizedY * size.height)
                 Offset(x, y)
             }
@@ -263,7 +266,7 @@ fun ShotChart(shots: List<Shot>, modifier: Modifier = Modifier) {
                         color = MaterialTheme.colorScheme.primary
                     )
                     Text(
-                        text = "%.1f m/s".format(shot.velocity),
+                        text = "%.1f %s".format(velocityUnit.fromMetersPerSecond(shot.velocity),velocityUnit.symbol),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -278,7 +281,7 @@ fun ShotChart(shots: List<Shot>, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ShotRow(shot: Shot, index: Int) {
+fun ShotRow(shot: Shot,index: Int,velocityUnit: VelocityUnit) {
     val isLight = MaterialTheme.colorScheme.surface == Color.White || MaterialTheme.colorScheme.surface.red > 0.9f
     val trendColor = if (isLight) Color(0xFF2E7D32) else Color(0xFF88FF11)
 
@@ -313,7 +316,7 @@ fun ShotRow(shot: Shot, index: Int) {
             Text(text = "%.2f J".format(shot.energyJoules), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "%.1f m/s".format(shot.velocity),
+                text = "%.1f %s".format(velocityUnit.fromMetersPerSecond(shot.velocity),velocityUnit.symbol),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -346,13 +349,13 @@ fun HeroSection(data: ChronoData) {
             )
             Row(verticalAlignment = Alignment.Bottom) {
                 Text(
-                    text = data.velocity,
+                    text = data.velocity.toFloatOrNull()?.let { data.velocityUnit.fromMetersPerSecond(it) }?.let { "%.1f".format(it) }?: "0.0",
                     fontSize = 52.sp,
                     color = contentColor,
                     fontWeight = FontWeight.Black
                 )
                 Text(
-                    text = " m/s",
+                    text = " ${data.velocityUnit.symbol}",
                     fontSize = 16.sp,
                     color = contentColor,
                     modifier = Modifier.padding(bottom = 12.dp),
@@ -377,17 +380,17 @@ fun StatsGrid(data: ChronoData) {
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Row(modifier = Modifier.fillMaxWidth()) {
-                StatItem(stringResource(R.string.stat_average), "%.1f".format(data.averageVelocity), Modifier.weight(1f))
-                StatItem(stringResource(R.string.stat_max), "%.1f".format(data.maxVelocity), Modifier.weight(1f))
-                StatItem(stringResource(R.string.stat_min), "%.1f".format(data.minVelocity), Modifier.weight(1f))
+                StatItem(stringResource(R.string.stat_average),"%.1f %s".format(data.velocityUnit.fromMetersPerSecond(data.averageVelocity),data.velocityUnit.symbol),Modifier.weight(1f))
+                StatItem(stringResource(R.string.stat_max),"%.1f %s".format(data.velocityUnit.fromMetersPerSecond(data.maxVelocity),data.velocityUnit.symbol),Modifier.weight(1f))
+                StatItem(stringResource(R.string.stat_min),"%.1f %s".format(data.velocityUnit.fromMetersPerSecond(data.minVelocity),data.velocityUnit.symbol),Modifier.weight(1f))
             }
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 8.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f)
             )
             Row(modifier = Modifier.fillMaxWidth()) {
-                StatItem(stringResource(R.string.stat_es), "%.1f".format(data.extremeSpread), Modifier.weight(1f))
-                StatItem(stringResource(R.string.stat_sd), "%.2f".format(data.standardDeviation), Modifier.weight(1f))
+                StatItem(stringResource(R.string.stat_es),"%.1f %s".format(data.velocityUnit.fromMetersPerSecond(data.extremeSpread),data.velocityUnit.symbol),Modifier.weight(1f))
+                StatItem(stringResource(R.string.stat_sd),"%.2f %s".format(data.velocityUnit.fromMetersPerSecond(data.standardDeviation),data.velocityUnit.symbol),Modifier.weight(1f))
                 StatItem(stringResource(R.string.stat_rof), "${data.fireRate} r/m", Modifier.weight(1f))
             }
         }

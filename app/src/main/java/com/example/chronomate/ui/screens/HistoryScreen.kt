@@ -24,7 +24,7 @@ fun HistoryScreen(data: ChronoData) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(data.shots.asReversed().mapIndexed { index, shot -> index to shot }) { (reversedIndex, shot) ->
                 val index = data.shots.size - reversedIndex
-                ShotRow(shot = shot, index = index)
+                ShotRow(shot = shot,index = index,velocityUnit = data.velocityUnit)
             }
         }
     }
