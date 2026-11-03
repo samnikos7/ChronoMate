@@ -648,15 +648,25 @@ class ChronoViewModel(context: Context) : ViewModel() {
                     }
                 }
                 
-                newShotsToAdd.forEach { vel ->
-                    currentSessionShots.add(Shot(
-                        rawVelocity = vel, 
-                        weightGrams = currentWeight, 
-                        compensationFactor = current.compensationFactor
-                    ))
-                    
-                    if (current.isCalibrationActive && currentCalibrationEntries.size < 100) {
-                        currentCalibrationEntries.add(CalibrationEntry(vel))
+                newShotsToAdd.forEach { rawVelocity ->
+                    val velocityMps =
+                        current.velocityUnit.toMetersPerSecond(rawVelocity)
+
+                    currentSessionShots.add(
+                        Shot(
+                            rawVelocity = velocityMps,
+                            weightGrams = currentWeight,
+                            compensationFactor = current.compensationFactor
+                        )
+                    )
+
+                    if (
+                        current.isCalibrationActive &&
+                        currentCalibrationEntries.size < 100
+                    ) {
+                        currentCalibrationEntries.add(
+                            CalibrationEntry(velocityMps)
+                        )
                     }
                 }
                 updatedLastSeen = rawShots
