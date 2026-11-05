@@ -15,10 +15,6 @@ data class Shot(
     val energyJoules: Float get() = 0.5f * (weightGrams / 1000f) * velocity.pow(2)
 }
 
-enum class WeightType {
-    BB, DIABLO, CUSTOM
-}
-
 enum class VelocityUnit(val symbol: String) {
     METERS_PER_SECOND("m/s"),
     FEET_PER_SECOND("FPS");
@@ -120,10 +116,6 @@ data class ChronoData(
     // Chrono Settings
     val chronoType: ChronoType = ChronoType.HT_X3000,
     
-    // Weight Settings
-    val weightType: WeightType = WeightType.BB,
-    val customWeights: List<CustomWeight> = emptyList(),
-
     // Unified BB Profiles
     val bbProfiles: List<BbProfile> = emptyList(),
     val selectedBbProfileId: String? = null,

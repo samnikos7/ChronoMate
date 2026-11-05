@@ -192,8 +192,6 @@ class ChronoViewModel(context: Context) : ViewModel() {
             selectedWeight = selectedBbWeight,
             bbProfiles = bbProfiles,
             selectedBbProfileId = selectedBbProfileId,
-            weightType = WeightType.valueOf(prefs.getString("weight_type", WeightType.BB.name) ?: WeightType.BB.name),
-            customWeights = customWeights,
             diameterMm = prefs.getFloat("diameter", 5.95f),
             airDensityRho = prefs.getFloat("air_density", 1.225f),
             dragCoefficientCw = prefs.getFloat("drag_coeff", 0.35f),
@@ -327,11 +325,6 @@ class ChronoViewModel(context: Context) : ViewModel() {
         )
     }
 
-    private fun saveCustomWeights(context: Context, weights: List<CustomWeight>) {
-        val serialized = weights.joinToString(";") { "${it.name}:${it.weight}:${it.caliber}:${it.caliberUnit}" }
-        savePreference(context, "custom_weights", serialized)
-    }
-
     private fun saveCalibration(context: Context) {
         val state = _uiState.value
         val serialized = state.calibrationEntries.joinToString(";") { 
@@ -434,15 +427,6 @@ class ChronoViewModel(context: Context) : ViewModel() {
                 diameterMm = profile.diameterMm
             )
         }
-    }
-
-    fun setWeight(weight: Float) {
-        _uiState.update { it.copy(selectedWeight = weight) }
-    }
-
-    fun setWeightType(context: Context, type: WeightType) {
-        _uiState.update { it.copy(weightType = type) }
-        savePreference(context, "weight_type", type.name)
     }
 
     fun setChronoType(context: Context, type: ChronoType) {
@@ -672,42 +656,6 @@ class ChronoViewModel(context: Context) : ViewModel() {
                     selectedProfile?.diameterMm
                         ?: 5.95f
             )
-        }
-    }
-
-    fun addCustomWeight(context: Context) {
-        _uiState.update { current ->
-            val newList = current.customWeights + CustomWeight("New Weight", 0.20f)
-            saveCustomWeights(context, newList)
-            current.copy(customWeights = newList)
-        }
-    }
-
-    fun updateCustomWeight(context: Context, index: Int, name: String, weight: Float, caliber: Float? = null, unit: String? = null) {
-        _uiState.update { current ->
-            val newList = current.customWeights.toMutableList()
-            if (index in newList.indices) {
-                val old = newList[index]
-                newList[index] = CustomWeight(
-                    name = name,
-                    weight = weight,
-                    caliber = caliber ?: old.caliber,
-                    caliberUnit = unit ?: old.caliberUnit
-                )
-                saveCustomWeights(context, newList)
-            }
-            current.copy(customWeights = newList)
-        }
-    }
-
-    fun removeCustomWeight(context: Context, index: Int) {
-        _uiState.update { current ->
-            val newList = current.customWeights.toMutableList()
-            if (index in newList.indices) {
-                newList.removeAt(index)
-                saveCustomWeights(context, newList)
-            }
-            current.copy(customWeights = newList)
         }
     }
 
