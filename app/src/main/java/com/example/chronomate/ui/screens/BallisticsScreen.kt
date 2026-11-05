@@ -313,7 +313,7 @@ fun BallisticsScreen(data: ChronoData, viewModel: ChronoViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
         
         Text(
-            text = "BB Profile",
+            text = stringResource(R.string.bb_profile_title),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
@@ -325,7 +325,7 @@ fun BallisticsScreen(data: ChronoData, viewModel: ChronoViewModel) {
 
         if (activeProfiles.isEmpty()) {
             Text(
-                text = "No active BB profiles",
+                text = stringResource(R.string.bb_profiles_no_active),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

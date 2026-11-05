@@ -49,7 +49,7 @@ fun DashboardScreen(data: ChronoData, viewModel: ChronoViewModel) {
 
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = "BB Profile",
+                text = stringResource(R.string.bb_profile_title),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
@@ -58,7 +58,7 @@ fun DashboardScreen(data: ChronoData, viewModel: ChronoViewModel) {
 
             if (activeProfiles.isEmpty()) {
                 Text(
-                    text = "No active BB profiles",
+                    text = stringResource(R.string.bb_profiles_no_active),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(vertical = 8.dp)

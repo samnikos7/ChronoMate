@@ -527,12 +527,12 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
 
         // Unified BB Profiles
         Text(
-            text = "BB Profiles",
+            text = stringResource(R.string.bb_profiles_title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )
         Text(
-            text = "Manage all standard and custom BB profiles in one list.",
+            text = stringResource(R.string.bb_profiles_description),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -547,7 +547,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
             Column(modifier = Modifier.padding(12.dp)) {
                 if (data.bbProfiles.isEmpty()) {
                     Text(
-                        text = "No BB profiles available.",
+                        text = stringResource(R.string.bb_profiles_empty),
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -604,7 +604,7 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                     ) {
                         Icon(Icons.Default.Add, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Add profile")
+                        Text(stringResource(R.string.bb_profile_add))
                     }
 
                     OutlinedButton(
@@ -613,14 +613,14 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
                     ) {
                         Icon(Icons.Default.Restore, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Restore defaults")
+                        Text(stringResource(R.string.bb_profile_restore_defaults))
                     }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "At least one profile must remain enabled.",
+                    text = stringResource(R.string.bb_profile_enabled_required),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -868,7 +868,7 @@ fun BbProfileEntry(
                             profile.diameterMm
                         )
                     },
-                    label = { Text("Profile name") },
+                    label = { Text(stringResource(R.string.bb_profile_name)) },
                     singleLine = true,
                     enabled = profile.enabled,
                     modifier = Modifier.weight(1f)
@@ -882,7 +882,7 @@ fun BbProfileEntry(
                 IconButton(onClick = onDelete) {
                     Icon(
                         Icons.Default.Delete,
-                        contentDescription = "Delete profile",
+                        contentDescription = stringResource(R.string.bb_profile_delete),
                         tint = MaterialTheme.colorScheme.error
                     )
                 }
@@ -905,7 +905,7 @@ fun BbProfileEntry(
                                 onUpdate(nameText, weight, profile.diameterMm)
                             }
                     },
-                    label = { Text("Weight") },
+                    label = { Text(stringResource(R.string.bb_profile_weight)) },
                     suffix = { Text("g") },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Decimal
@@ -926,7 +926,7 @@ fun BbProfileEntry(
                                 onUpdate(nameText, profile.weightGrams, diameter)
                             }
                     },
-                    label = { Text("Diameter") },
+                    label = { Text(stringResource(R.string.bb_profile_diameter)) },
                     suffix = { Text("mm") },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Decimal
@@ -940,7 +940,7 @@ fun BbProfileEntry(
             if (profile.builtIn) {
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = "Standard profile",
+                    text = stringResource(R.string.bb_profile_standard),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

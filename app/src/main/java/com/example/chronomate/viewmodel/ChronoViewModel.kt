@@ -438,7 +438,7 @@ class ChronoViewModel(context: Context) : ViewModel() {
         _uiState.update { current ->
             val newProfile = BbProfile(
                 id = "custom_${System.currentTimeMillis()}",
-                name = "New profile",
+                name = context.getString(R.string.bb_profile_new),
                 weightGrams = 0.20f,
                 diameterMm = 5.95f,
                 enabled = true,
@@ -468,7 +468,11 @@ class ChronoViewModel(context: Context) : ViewModel() {
                 .replace("|", "")
                 .replace(";", "")
                 .trim()
-                .ifBlank { "Unnamed profile" }
+                .ifBlank {
+                    context.getString(
+                        R.string.bb_profile_unnamed
+                    )
+                }
 
             val validWeight =
                 weightGrams.coerceIn(0.01f, 10.0f)

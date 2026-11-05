@@ -161,4 +161,22 @@
     <string name="fixed_chrono_confirm">I understand, enable</string>
     <string name="fixed_chrono_cancel">Cancel</string>
 
+
+    <!-- Unified BB profiles -->
+    <string name="bb_profiles_title">BB Profiles</string>
+    <string name="bb_profiles_description">Manage all standard and custom BB profiles in one list.</string>
+    <string name="bb_profile_title">BB Profile</string>
+    <string name="bb_profiles_empty">No BB profiles available.</string>
+    <string name="bb_profiles_no_active">No active BB profiles</string>
+    <string name="bb_profile_add">Add profile</string>
+    <string name="bb_profile_restore_defaults">Restore defaults</string>
+    <string name="bb_profile_enabled_required">At least one profile must remain enabled.</string>
+    <string name="bb_profile_name">Profile name</string>
+    <string name="bb_profile_weight">Weight</string>
+    <string name="bb_profile_diameter">Diameter</string>
+    <string name="bb_profile_standard">Standard profile</string>
+    <string name="bb_profile_delete">Delete profile</string>
+    <string name="bb_profile_new">New profile</string>
+    <string name="bb_profile_unnamed">Unnamed profile</string>
+
 </resources>
