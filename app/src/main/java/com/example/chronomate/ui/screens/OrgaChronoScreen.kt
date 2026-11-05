@@ -1,6 +1,7 @@
 package com.example.chronomate.ui.screens
 
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -11,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
@@ -19,24 +21,22 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chronomate.R
+import com.example.chronomate.model.BbProfile
 import com.example.chronomate.model.ChronoData
-import com.example.chronomate.model.WeightType
 import com.example.chronomate.viewmodel.ChronoViewModel
 import kotlin.math.pow
 
 @Composable
 fun OrgaChronoScreen(data: ChronoData, viewModel: ChronoViewModel) {
     val configuration = LocalConfiguration.current
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val context = LocalContext.current
+    val isLandscape =
+        configuration.orientation ==
+            Configuration.ORIENTATION_LANDSCAPE
     val isDark = data.isDarkMode
-    
-    val weightItems = when (data.weightType) {
-        WeightType.BB -> listOf(0.20f, 0.23f, 0.25f, 0.28f, 0.30f, 0.32f, 0.36f, 0.40f, 0.43f, 0.45f).map { it to "%.2f g".format(it) }
-        WeightType.DIABLO -> listOf(0.50f, 0.51f, 0.52f, 0.53f, 0.54f).map { it to "%.2f g".format(it) }
-        WeightType.CUSTOM -> data.customWeights.map {it.weight to it.name}
-    }
-    
-    val weights = weightItems.map { it.first }
+
+    val activeProfiles = data.bbProfiles.filter { it.enabled }
+    val weights = activeProfiles.map { it.weightGrams }
     
     // We get the raw velocity float from the latest shot for precision
     val latestVelocity = data.shots.lastOrNull()?.velocity ?: 0f
@@ -64,12 +64,25 @@ fun OrgaChronoScreen(data: ChronoData, viewModel: ChronoViewModel) {
                 Column(modifier = Modifier.weight(2.5f)) { 
                     Text(stringResource(R.string.joule_grid_title), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
-                    if (weightItems.isEmpty()) {
+                    if (activeProfiles.isEmpty()) {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                             Text("No weights available. Check settings.")
                         }
                     } else {
-                        JouleGridStatic(velocity = latestVelocity, weights = weightItems, practicalWeight = practicalWeight, columns = 4, isDark = isDark)
+                        JouleGridStatic(
+                            velocity = latestVelocity,
+                            profiles = activeProfiles,
+                            selectedProfileId = data.selectedBbProfileId,
+                            practicalWeight = practicalWeight,
+                            columns = 4,
+                            isDark = isDark,
+                            onProfileSelected = { profileId ->
+                                viewModel.selectBbProfile(
+                                    context,
+                                    profileId
+                                )
+                            }
+                        )
                     }
                 }
             }
@@ -78,12 +91,25 @@ fun OrgaChronoScreen(data: ChronoData, viewModel: ChronoViewModel) {
             Spacer(modifier = Modifier.height(24.dp))
             Text(stringResource(R.string.joule_grid_title), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(16.dp))
-            if (weightItems.isEmpty()) {
+            if (activeProfiles.isEmpty()) {
                 Box(modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
                     Text("No weights available. Check settings.")
                 }
             } else {
-                JouleGridStatic(velocity = latestVelocity, weights = weightItems, practicalWeight = practicalWeight, columns = 2, isDark = isDark)
+                JouleGridStatic(
+                    velocity = latestVelocity,
+                    profiles = activeProfiles,
+                    selectedProfileId = data.selectedBbProfileId,
+                    practicalWeight = practicalWeight,
+                    columns = 2,
+                    isDark = isDark,
+                    onProfileSelected = { profileId ->
+                        viewModel.selectBbProfile(
+                            context,
+                            profileId
+                        )
+                    }
+                )
             }
             Spacer(modifier = Modifier.height(24.dp))
             OrgaSettingsSection(data = data, viewModel = viewModel)
@@ -93,14 +119,29 @@ fun OrgaChronoScreen(data: ChronoData, viewModel: ChronoViewModel) {
 }
 
 @Composable
-fun JouleGridStatic(velocity: Float, weights: List<Pair<Float, String>>, practicalWeight: Float, columns: Int, isDark: Boolean) {
-    val rows = weights.chunked(columns)
-    
+fun JouleGridStatic(
+    velocity: Float,
+    profiles: List<BbProfile>,
+    selectedProfileId: String?,
+    practicalWeight: Float,
+    columns: Int,
+    isDark: Boolean,
+    onProfileSelected: (String) -> Unit
+) {
+    val rows = profiles.chunked(columns)
+
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        rows.forEach { rowWeights ->
+        rows.forEach { rowProfiles ->
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                rowWeights.forEach { (weight, label) ->
-                    val energy = 0.5f * (weight / 1000f) * velocity.pow(2)
+                rowProfiles.forEach { profile ->
+                    val weight = profile.weightGrams
+                    val label = profile.name
+                    val selected =
+                        profile.id == selectedProfileId
+                    val energy =
+                        0.5f *
+                            (weight / 1000f) *
+                            velocity.pow(2)
                     
                     // Determine colors based on limits and theme
                     val (bgColor, contentColor) = when {
@@ -123,8 +164,26 @@ fun JouleGridStatic(velocity: Float, weights: List<Pair<Float, String>>, practic
                     }
 
                     Card(
-                        modifier = Modifier.weight(1f),
-                        colors = CardDefaults.cardColors(containerColor = bgColor)
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable {
+                                onProfileSelected(profile.id)
+                            },
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (selected) {
+                                MaterialTheme.colorScheme.primaryContainer
+                            } else {
+                                bgColor
+                            }
+                        ),
+                        border = if (selected) {
+                            androidx.compose.foundation.BorderStroke(
+                                2.dp,
+                                MaterialTheme.colorScheme.primary
+                            )
+                        } else {
+                            null
+                        }
                     ) {
                         Column(modifier = Modifier.padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
@@ -141,8 +200,12 @@ fun JouleGridStatic(velocity: Float, weights: List<Pair<Float, String>>, practic
                         }
                     }
                 }
-                if (rowWeights.size < columns) {
-                    Spacer(modifier = Modifier.weight((columns - rowWeights.size).toFloat()))
+                if (rowProfiles.size < columns) {
+                    Spacer(
+                        modifier = Modifier.weight(
+                            (columns - rowProfiles.size).toFloat()
+                        )
+                    )
                 }
             }
         }
