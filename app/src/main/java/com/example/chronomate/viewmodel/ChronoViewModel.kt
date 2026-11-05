@@ -413,6 +413,29 @@ class ChronoViewModel(context: Context) : ViewModel() {
         }
     }
 
+    fun selectBbProfile(
+        context: Context,
+        profileId: String
+    ) {
+        _uiState.update { current ->
+            val profile = current.bbProfiles.firstOrNull {
+                it.id == profileId && it.enabled
+            } ?: return@update current
+
+            savePreference(
+                context,
+                "selected_bb_profile_id",
+                profile.id
+            )
+
+            current.copy(
+                selectedBbProfileId = profile.id,
+                selectedWeight = profile.weightGrams,
+                diameterMm = profile.diameterMm
+            )
+        }
+    }
+
     fun setWeight(weight: Float) {
         _uiState.update { it.copy(selectedWeight = weight) }
     }
