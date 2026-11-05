@@ -50,6 +50,15 @@ data class CustomWeight(
     val caliberUnit: String = "mm"
 )
 
+data class BbProfile(
+    val id: String,
+    val name: String,
+    val weightGrams: Float,
+    val diameterMm: Float = 5.95f,
+    val enabled: Boolean = true,
+    val builtIn: Boolean = false
+)
+
 enum class ChronoType(val ssid: String, val displayName: String) {
     HT_X3000("HT-X3000", "HT-X3000"),
     HT_50("HT50", "HT-50")
@@ -114,6 +123,10 @@ data class ChronoData(
     // Weight Settings
     val weightType: WeightType = WeightType.BB,
     val customWeights: List<CustomWeight> = emptyList(),
+
+    // Unified BB Profiles
+    val bbProfiles: List<BbProfile> = emptyList(),
+    val selectedBbProfileId: String? = null,
     
     // Ballistic Settings
     val diameterMm: Float = 5.95f,

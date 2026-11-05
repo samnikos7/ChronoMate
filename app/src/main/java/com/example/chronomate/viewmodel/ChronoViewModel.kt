@@ -94,6 +94,66 @@ class ChronoViewModel(context: Context) : ViewModel() {
             }
         } else emptyList()
 
+        val savedBbProfiles = deserializeBbProfiles(
+            prefs.getString("bb_profiles", "") ?: ""
+        )
+
+        val bbProfiles = if (savedBbProfiles.isNotEmpty()) {
+            savedBbProfiles
+        } else {
+            val defaultProfiles = createDefaultBbProfiles()
+            val migrationTimestamp = System.currentTimeMillis()
+
+            val migratedCustomProfiles = customWeights.mapIndexed {
+                    index,
+                    customWeight ->
+                BbProfile(
+                    id = "custom_${migrationTimestamp}_$index",
+                    name = customWeight.name
+                        .replace("|", "")
+                        .replace(";", "")
+                        .trim()
+                        .ifBlank {
+                            "%.2f".format(
+                                Locale.US,
+                                customWeight.weight
+                            )
+                        },
+                    weightGrams = customWeight.weight,
+                    diameterMm = when (
+                        customWeight.caliberUnit.lowercase(Locale.ROOT)
+                    ) {
+                        "mm" -> customWeight.caliber
+                        "inch" -> customWeight.caliber * 25.4f
+                        else -> customWeight.caliber
+                    },
+                    enabled = true,
+                    builtIn = false
+                )
+            }
+
+            val migratedProfiles =
+                defaultProfiles + migratedCustomProfiles
+
+            saveBbProfiles(context, migratedProfiles)
+            migratedProfiles
+        }
+
+        val savedSelectedProfileId =
+            prefs.getString("selected_bb_profile_id", null)
+
+        val selectedBbProfile = bbProfiles.firstOrNull {
+            it.id == savedSelectedProfileId && it.enabled
+        } ?: bbProfiles
+            .filter { it.enabled }
+            .minByOrNull {
+                kotlin.math.abs(it.weightGrams - 0.20f)
+            }
+
+        val selectedBbProfileId = selectedBbProfile?.id
+        val selectedBbWeight =
+            selectedBbProfile?.weightGrams ?: 0.20f
+
         val calibrationEntriesJson = prefs.getString("calibration_entries", "[]") ?: "[]"
         val calibrationEntries = if (calibrationEntriesJson != "[]" && calibrationEntriesJson.isNotEmpty()) {
             calibrationEntriesJson.split(";").mapNotNull {
@@ -129,6 +189,9 @@ class ChronoViewModel(context: Context) : ViewModel() {
             fixedChronoDiameterMm =prefs.getFloat("fixed_chrono_diameter_mm", 6.0f),
             maxAllowedJoule = prefs.getFloat("max_joule", 1.5f),
             maxAllowedOverhopCm = prefs.getFloat("max_overhop", 15f),
+            selectedWeight = selectedBbWeight,
+            bbProfiles = bbProfiles,
+            selectedBbProfileId = selectedBbProfileId,
             weightType = WeightType.valueOf(prefs.getString("weight_type", WeightType.BB.name) ?: WeightType.BB.name),
             customWeights = customWeights,
             diameterMm = prefs.getFloat("diameter", 5.95f),
@@ -159,6 +222,109 @@ class ChronoViewModel(context: Context) : ViewModel() {
             }
             apply()
         }
+    }
+
+    private fun createDefaultBbProfiles(): List<BbProfile> {
+        val standardWeights = listOf(
+            0.20f,
+            0.23f,
+            0.25f,
+            0.28f,
+            0.30f,
+            0.32f,
+            0.36f,
+            0.40f,
+            0.43f,
+            0.45f
+        )
+
+        return standardWeights.map { weight ->
+            val weightCode = (weight * 100).toInt()
+
+            BbProfile(
+                id = "standard_$weightCode",
+                name = "%.2f".format(Locale.US, weight),
+                weightGrams = weight,
+                diameterMm = 5.95f,
+                enabled = true,
+                builtIn = true
+            )
+        }
+    }
+
+    private fun serializeBbProfiles(
+        profiles: List<BbProfile>
+    ): String {
+        return profiles.joinToString(";") { profile ->
+            listOf(
+                profile.id,
+                profile.name,
+                profile.weightGrams.toString(),
+                profile.diameterMm.toString(),
+                profile.enabled.toString(),
+                profile.builtIn.toString()
+            ).joinToString("|")
+        }
+    }
+
+    private fun deserializeBbProfiles(
+        serialized: String
+    ): List<BbProfile> {
+        if (serialized.isBlank()) {
+            return emptyList()
+        }
+
+        return serialized
+            .split(";")
+            .mapNotNull { entry ->
+                val parts = entry.split("|")
+
+                if (parts.size != 6) {
+                    return@mapNotNull null
+                }
+
+                val id = parts[0]
+                val name = parts[1]
+                val weightGrams =
+                    parts[2].toFloatOrNull()
+                        ?: return@mapNotNull null
+                val diameterMm =
+                    parts[3].toFloatOrNull()
+                        ?: return@mapNotNull null
+                val enabled =
+                    parts[4].toBooleanStrictOrNull() ?: true
+                val builtIn =
+                    parts[5].toBooleanStrictOrNull() ?: false
+
+                if (
+                    id.isBlank() ||
+                    name.isBlank() ||
+                    weightGrams <= 0f ||
+                    diameterMm <= 0f
+                ) {
+                    return@mapNotNull null
+                }
+
+                BbProfile(
+                    id = id,
+                    name = name,
+                    weightGrams = weightGrams,
+                    diameterMm = diameterMm,
+                    enabled = enabled,
+                    builtIn = builtIn
+                )
+            }
+    }
+
+    private fun saveBbProfiles(
+        context: Context,
+        profiles: List<BbProfile>
+    ) {
+        savePreference(
+            context,
+            "bb_profiles",
+            serializeBbProfiles(profiles)
+        )
     }
 
     private fun saveCustomWeights(context: Context, weights: List<CustomWeight>) {
