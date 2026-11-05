@@ -12,12 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.chronomate.R
 import com.example.chronomate.model.ChronoData
-import com.example.chronomate.model.WeightType
 import com.example.chronomate.ui.components.HeroSection
 import com.example.chronomate.ui.components.ShotChart
 import com.example.chronomate.ui.components.StatsGrid
@@ -26,14 +26,10 @@ import com.example.chronomate.viewmodel.ChronoViewModel
 @Composable
 fun DashboardScreen(data: ChronoData, viewModel: ChronoViewModel) {
     val configuration = LocalConfiguration.current
+    val context = LocalContext.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val scrollState = rememberScrollState()
-
-    val weights = when (data.weightType) {
-        WeightType.BB -> listOf(0.20f, 0.23f, 0.25f, 0.28f, 0.30f, 0.32f, 0.36f, 0.40f, 0.43f, 0.45f).map { it to "%.2f".format(it) }
-        WeightType.DIABLO -> listOf(0.50f, 0.51f, 0.52f, 0.53f, 0.54f).map { it to "%.2f".format(it) }
-        WeightType.CUSTOM -> data.customWeights.map {it.weight to it.name}
-    }
+    val activeProfiles = data.bbProfiles.filter { it.enabled }
 
     Column(
         modifier = Modifier
@@ -53,34 +49,43 @@ fun DashboardScreen(data: ChronoData, viewModel: ChronoViewModel) {
 
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = when(data.weightType) {
-                    WeightType.BB -> stringResource(R.string.bb_weight_label)
-                    WeightType.DIABLO -> stringResource(R.string.diablo_weight_label)
-                    WeightType.CUSTOM -> stringResource(R.string.custom_weight_label)
-                },
+                text = "BB Profile",
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
-            
-            if (weights.isEmpty() && data.weightType == WeightType.CUSTOM) {
+
+            if (activeProfiles.isEmpty()) {
                 Text(
-                    stringResource(R.string.no_custom_weights_dashboard),
+                    text = "No active BB profiles",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
             } else {
                 LazyRow(
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(weights) { (weight, label) ->
+                    items(
+                        items = activeProfiles,
+                        key = { profile -> profile.id }
+                    ) { profile ->
                         FilterChip(
-                            selected = data.selectedWeight == weight,
-                            onClick = { viewModel.setWeight(weight) },
-                            label = { Text(label) }
+                            selected =
+                                data.selectedBbProfileId == profile.id,
+                            onClick = {
+                                viewModel.selectBbProfile(
+                                    context,
+                                    profile.id
+                                )
+                            },
+                            label = {
+                                Text(profile.name)
+                            }
                         )
                     }
                 }
