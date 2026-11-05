@@ -160,4 +160,21 @@
     <string name="fixed_chrono_warning_part_three">ChronoMate 将使用测得的速度，并根据应用中选择的实际 BB 弹重量计算正确的能量。</string>
     <string name="fixed_chrono_confirm">我已了解，启用</string>
     <string name="fixed_chrono_cancel">取消</string>
+
+    <!-- Unified BB profiles -->
+    <string name="bb_profiles_title">BB 弹配置</string>
+    <string name="bb_profiles_description">在一个列表中管理所有标准和自定义 BB 弹配置。</string>
+    <string name="bb_profile_title">BB 弹配置</string>
+    <string name="bb_profiles_empty">没有可用的 BB 弹配置。</string>
+    <string name="bb_profiles_no_active">没有已启用的 BB 弹配置</string>
+    <string name="bb_profile_add">添加配置</string>
+    <string name="bb_profile_restore_defaults">恢复默认配置</string>
+    <string name="bb_profile_enabled_required">必须至少保留一个已启用的配置。</string>
+    <string name="bb_profile_name">配置名称</string>
+    <string name="bb_profile_weight">重量</string>
+    <string name="bb_profile_diameter">直径</string>
+    <string name="bb_profile_standard">标准配置</string>
+    <string name="bb_profile_delete">删除配置</string>
+    <string name="bb_profile_new">新配置</string>
+    <string name="bb_profile_unnamed">未命名配置</string>
 </resources>

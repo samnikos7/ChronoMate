@@ -160,4 +160,21 @@
     <string name="fixed_chrono_warning_part_three">ChronoMate utilizará la velocidad medida y calculará la energía correcta con el peso real de la BB seleccionado en la aplicación.</string>
     <string name="fixed_chrono_confirm">Entiendo, activar</string>
     <string name="fixed_chrono_cancel">Cancelar</string>
+
+    <!-- Unified BB profiles -->
+    <string name="bb_profiles_title">Perfiles de BB</string>
+    <string name="bb_profiles_description">Administra todos los perfiles de BB estándar y personalizados en una sola lista.</string>
+    <string name="bb_profile_title">Perfil de BB</string>
+    <string name="bb_profiles_empty">No hay perfiles de BB disponibles.</string>
+    <string name="bb_profiles_no_active">No hay perfiles de BB activos</string>
+    <string name="bb_profile_add">Añadir perfil</string>
+    <string name="bb_profile_restore_defaults">Restaurar valores predeterminados</string>
+    <string name="bb_profile_enabled_required">Debe permanecer activo al menos un perfil.</string>
+    <string name="bb_profile_name">Nombre del perfil</string>
+    <string name="bb_profile_weight">Peso</string>
+    <string name="bb_profile_diameter">Diámetro</string>
+    <string name="bb_profile_standard">Perfil estándar</string>
+    <string name="bb_profile_delete">Eliminar perfil</string>
+    <string name="bb_profile_new">Nuevo perfil</string>
+    <string name="bb_profile_unnamed">Perfil sin nombre</string>
 </resources>

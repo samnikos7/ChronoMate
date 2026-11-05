@@ -160,4 +160,21 @@
     <string name="fixed_chrono_warning_part_three">ChronoMate використає виміряну швидкість і обчислить правильну енергію за фактичною вагою кульки, вибраною в застосунку.</string>
     <string name="fixed_chrono_confirm">Розумію, увімкнути</string>
     <string name="fixed_chrono_cancel">Скасувати</string>
+
+    <!-- Unified BB profiles -->
+    <string name="bb_profiles_title">Профілі кульок BB</string>
+    <string name="bb_profiles_description">Керуйте всіма стандартними та користувацькими профілями кульок BB в одному списку.</string>
+    <string name="bb_profile_title">Профіль кульки BB</string>
+    <string name="bb_profiles_empty">Немає доступних профілів кульок BB.</string>
+    <string name="bb_profiles_no_active">Немає активних профілів кульок BB</string>
+    <string name="bb_profile_add">Додати профіль</string>
+    <string name="bb_profile_restore_defaults">Відновити стандартні</string>
+    <string name="bb_profile_enabled_required">Принаймні один профіль має залишатися ввімкненим.</string>
+    <string name="bb_profile_name">Назва профілю</string>
+    <string name="bb_profile_weight">Вага</string>
+    <string name="bb_profile_diameter">Діаметр</string>
+    <string name="bb_profile_standard">Стандартний профіль</string>
+    <string name="bb_profile_delete">Видалити профіль</string>
+    <string name="bb_profile_new">Новий профіль</string>
+    <string name="bb_profile_unnamed">Профіль без назви</string>
 </resources>

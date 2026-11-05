@@ -160,4 +160,21 @@
     <string name="fixed_chrono_warning_part_three">ChronoMateは測定した速度とアプリで選択した実際のBB弾重量を使用して、正しいエネルギーを計算します。</string>
     <string name="fixed_chrono_confirm">理解して有効にする</string>
     <string name="fixed_chrono_cancel">キャンセル</string>
+
+    <!-- Unified BB profiles -->
+    <string name="bb_profiles_title">BB弾プロファイル</string>
+    <string name="bb_profiles_description">標準およびカスタムのBB弾プロファイルを1つのリストで管理します。</string>
+    <string name="bb_profile_title">BB弾プロファイル</string>
+    <string name="bb_profiles_empty">利用可能なBB弾プロファイルがありません。</string>
+    <string name="bb_profiles_no_active">有効なBB弾プロファイルがありません</string>
+    <string name="bb_profile_add">プロファイルを追加</string>
+    <string name="bb_profile_restore_defaults">標準設定を復元</string>
+    <string name="bb_profile_enabled_required">少なくとも1つのプロファイルを有効にしておく必要があります。</string>
+    <string name="bb_profile_name">プロファイル名</string>
+    <string name="bb_profile_weight">重量</string>
+    <string name="bb_profile_diameter">直径</string>
+    <string name="bb_profile_standard">標準プロファイル</string>
+    <string name="bb_profile_delete">プロファイルを削除</string>
+    <string name="bb_profile_new">新しいプロファイル</string>
+    <string name="bb_profile_unnamed">名前のないプロファイル</string>
 </resources>

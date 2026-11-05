@@ -160,4 +160,21 @@
     <string name="fixed_chrono_warning_part_three">ChronoMate bruker den målte hastigheten og beregner riktig energi med den faktiske BB-vekten som er valgt i appen.</string>
     <string name="fixed_chrono_confirm">Jeg forstår, aktiver</string>
     <string name="fixed_chrono_cancel">Avbryt</string>
+
+    <!-- Unified BB profiles -->
+    <string name="bb_profiles_title">BB-profiler</string>
+    <string name="bb_profiles_description">Administrer alle standard- og egendefinerte BB-profiler i én liste.</string>
+    <string name="bb_profile_title">BB-profil</string>
+    <string name="bb_profiles_empty">Ingen BB-profiler tilgjengelige.</string>
+    <string name="bb_profiles_no_active">Ingen aktive BB-profiler</string>
+    <string name="bb_profile_add">Legg til profil</string>
+    <string name="bb_profile_restore_defaults">Gjenopprett standardprofiler</string>
+    <string name="bb_profile_enabled_required">Minst én profil må være aktivert.</string>
+    <string name="bb_profile_name">Profilnavn</string>
+    <string name="bb_profile_weight">Vekt</string>
+    <string name="bb_profile_diameter">Diameter</string>
+    <string name="bb_profile_standard">Standardprofil</string>
+    <string name="bb_profile_delete">Slett profil</string>
+    <string name="bb_profile_new">Ny profil</string>
+    <string name="bb_profile_unnamed">Profil uten navn</string>
 </resources>
