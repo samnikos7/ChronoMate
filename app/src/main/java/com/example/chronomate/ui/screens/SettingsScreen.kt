@@ -28,10 +28,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chronomate.R
+import com.example.chronomate.model.BbProfile
 import com.example.chronomate.model.CalibrationEntry
 import com.example.chronomate.model.ChronoData
 import com.example.chronomate.model.CompensationMode
-import com.example.chronomate.model.WeightType
 import com.example.chronomate.model.VelocityUnit
 import com.example.chronomate.viewmodel.ChronoViewModel
 
@@ -40,7 +40,6 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     var showLanguageDialog by remember { mutableStateOf(false) }
-    var weightsExpanded by remember { mutableStateOf(false) }
     var calibrationExpanded by remember { mutableStateOf(false) }
     var showFixedChronoWarning by remember { mutableStateOf(false) }
 
@@ -526,96 +525,105 @@ fun SettingsScreen(data: ChronoData, viewModel: ChronoViewModel) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Weight Type Selection
-        Text(stringResource(R.string.weight_config_title), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        // Unified BB Profiles
+        Text(
+            text = "BB Profiles",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = "Manage all standard and custom BB profiles in one list.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
         Spacer(modifier = Modifier.height(12.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            WeightTypeButton(
-                label = stringResource(R.string.weight_type_bbs),
-                selected = data.weightType == WeightType.BB,
-                onClick = { viewModel.setWeightType(context, WeightType.BB) },
-                modifier = Modifier.weight(1f)
-            )
-            WeightTypeButton(
-                label = stringResource(R.string.weight_type_diablos),
-                selected = data.weightType == WeightType.DIABLO,
-                onClick = { viewModel.setWeightType(context, WeightType.DIABLO) },
-                modifier = Modifier.weight(1f)
-            )
-            WeightTypeButton(
-                label = stringResource(R.string.weight_type_custom),
-                selected = data.weightType == WeightType.CUSTOM,
-                onClick = { viewModel.setWeightType(context, WeightType.CUSTOM) },
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Expandable Custom Weights Table
         Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+            )
         ) {
-            Column(modifier = Modifier.padding(8.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().clickable { weightsExpanded = !weightsExpanded }.padding(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(stringResource(R.string.custom_weights_list), style = MaterialTheme.typography.titleSmall)
-                    Icon(
-                        if (weightsExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                        contentDescription = null
+            Column(modifier = Modifier.padding(12.dp)) {
+                if (data.bbProfiles.isEmpty()) {
+                    Text(
+                        text = "No BB profiles available.",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        textAlign = TextAlign.Center
                     )
-                }
-
-                AnimatedVisibility(visible = weightsExpanded) {
-                    Column {
-                        if (data.customWeights.isEmpty()) {
-                            Text(
-                                stringResource(R.string.no_custom_weights),
-                                style = MaterialTheme.typography.bodySmall,
-                                modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally)
-                            )
-                        } else {
-                            data.customWeights.forEachIndexed { index, custom ->
-                                CustomWeightEntry(
-                                    index = index,
-                                    name = custom.name,
-                                    weight = custom.weight,
-                                    caliber = custom.caliber,
-                                    unit = custom.caliberUnit,
-                                    onUpdate = { name, w, cal, u ->
-                                        viewModel.updateCustomWeight(context, index, name, w, cal, u)
-                                    },
-                                    onDelete = { viewModel.removeCustomWeight(context, index) }
+                } else {
+                    data.bbProfiles.forEachIndexed { index, profile ->
+                        BbProfileEntry(
+                            profile = profile,
+                            selected = profile.id == data.selectedBbProfileId,
+                            onSelect = {
+                                viewModel.selectBbProfile(context, profile.id)
+                            },
+                            onUpdate = { name, weight, diameter ->
+                                viewModel.updateBbProfile(
+                                    context = context,
+                                    profileId = profile.id,
+                                    name = name,
+                                    weightGrams = weight,
+                                    diameterMm = diameter
                                 )
-                                if (index < data.customWeights.size - 1) {
-                                    HorizontalDivider(
-                                        modifier = Modifier.padding(vertical = 8.dp),
-                                        color = MaterialTheme.colorScheme.outlineVariant
-                                    )
-                                }
+                            },
+                            onEnabledChange = { enabled ->
+                                viewModel.setBbProfileEnabled(
+                                    context,
+                                    profile.id,
+                                    enabled
+                                )
+                            },
+                            onDelete = {
+                                viewModel.removeBbProfile(context, profile.id)
                             }
-                        }
+                        )
 
-                        Button(
-                            onClick = { viewModel.addCustomWeight(context) },
-                            modifier = Modifier.fillMaxWidth().padding(8.dp),
-                            colors = ButtonDefaults.buttonColors()
-                        ) {
-                            Icon(Icons.Default.Add, contentDescription = null)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(stringResource(R.string.add_row_button))
+                        if (index < data.bbProfiles.lastIndex) {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                color = MaterialTheme.colorScheme.outlineVariant
+                            )
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = { viewModel.addBbProfile(context) },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = null)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Add profile")
+                    }
+
+                    OutlinedButton(
+                        onClick = { viewModel.restoreDefaultBbProfiles(context) },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Icon(Icons.Default.Restore, contentDescription = null)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Restore defaults")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "At least one profile must remain enabled.",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
 
@@ -788,136 +796,156 @@ var textFieldValue by remember(entry.controlValue, velocityUnit) {
 }
 
 @Composable
-fun CustomWeightEntry(
-    index: Int,
-    name: String,
-    weight: Float,
-    caliber: Float,
-    unit: String,
-    onUpdate: (String, Float, Float, String) -> Unit,
+fun BbProfileEntry(
+    profile: BbProfile,
+    selected: Boolean,
+    onSelect: () -> Unit,
+    onUpdate: (String, Float, Float) -> Unit,
+    onEnabledChange: (Boolean) -> Unit,
     onDelete: () -> Unit
 ) {
-    var nameText by remember(name) { mutableStateOf(name) }
-    var weightValue by remember(weight) {
-        mutableStateOf(TextFieldValue(
-            text = weight.toString(),
-            selection = TextRange(weight.toString().length)
-        ))
+    var nameText by remember(profile.id, profile.name) {
+        mutableStateOf(profile.name)
     }
-    var caliberValue by remember(caliber) {
-        mutableStateOf(TextFieldValue(
-            text = caliber.toString(),
-            selection = TextRange(caliber.toString().length)
-        ))
-    }
-    var unitExpanded by remember { mutableStateOf(false) }
-    val units = listOf("mm", "inch", "cal", "ga")
-
-    Column(modifier = Modifier.fillMaxWidth().padding(4.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            TextField(
-                value = nameText,
-                onValueChange = {
-                    nameText = it
-                    onUpdate(it, weight, caliber, unit)
-                },
-                modifier = Modifier.weight(1f),
-                label = { Text(stringResource(R.string.weight_name_label), fontSize = 10.sp) },
-                textStyle = MaterialTheme.typography.bodySmall,
-                singleLine = true
+    var weightText by remember(profile.id, profile.weightGrams) {
+        val value = "%.3f".format(profile.weightGrams)
+        mutableStateOf(
+            TextFieldValue(
+                text = value,
+                selection = TextRange(value.length)
             )
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TextField(
-                value = caliberValue,
-                onValueChange = {
-                    caliberValue = it
-                    it.text.toFloatOrNull()?.let { c -> onUpdate(name, weight, c, unit) }
-                },
-                modifier = Modifier.weight(1f),
-                label = { Text(stringResource(R.string.caliber_label), fontSize = 10.sp) },
-                textStyle = MaterialTheme.typography.bodySmall,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                singleLine = true
-            )
-
-            Box(modifier = Modifier.weight(0.6f)) {
-                OutlinedButton(
-                    onClick = { unitExpanded = true },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    shape = RoundedCornerShape(4.dp),
-                    contentPadding = PaddingValues(horizontal = 8.dp)
-                ) {
-                    Text(unit, style = MaterialTheme.typography.bodySmall)
-                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                }
-                DropdownMenu(expanded = unitExpanded, onDismissRequest = { unitExpanded = false }) {
-                    units.forEach { u ->
-                        DropdownMenuItem(
-                            text = { Text(u) },
-                            onClick = {
-                                onUpdate(name, weight, caliber, u)
-                                unitExpanded = false
-                            }
-                        )
-                    }
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        TextField(
-            value = weightValue,
-            onValueChange = {
-                weightValue = it
-                it.text.toFloatOrNull()?.let { w -> onUpdate(name, w, caliber, unit) }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text(stringResource(R.string.weight_value_label), fontSize = 10.sp) },
-            textStyle = MaterialTheme.typography.bodySmall,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            singleLine = true
         )
     }
-}
+    var diameterText by remember(profile.id, profile.diameterMm) {
+        val value = "%.2f".format(profile.diameterMm)
+        mutableStateOf(
+            TextFieldValue(
+                text = value,
+                selection = TextRange(value.length)
+            )
+        )
+    }
 
-@Composable
-fun WeightTypeButton(label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    var resizedFontSize by remember { mutableStateOf(12.sp) }
-
-    Button(
-        onClick = onClick,
-        modifier = modifier.height(48.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = profile.enabled) { onSelect() },
+        colors = CardDefaults.cardColors(
+            containerColor = if (selected) {
+                MaterialTheme.colorScheme.primaryContainer
+            } else {
+                MaterialTheme.colorScheme.surface
+            }
         ),
-        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp),
-        shape = MaterialTheme.shapes.medium
+        border = if (selected) {
+            androidx.compose.foundation.BorderStroke(
+                1.dp,
+                MaterialTheme.colorScheme.primary
+            )
+        } else {
+            null
+        }
     ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium.copy(
-                fontSize = resizedFontSize,
-                lineHeight = resizedFontSize
-            ),
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-            overflow = TextOverflow.Visible,
-            softWrap = false,
-            onTextLayout = { textLayoutResult ->
-                if (textLayoutResult.hasVisualOverflow) {
-                    resizedFontSize *= 0.95f
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                RadioButton(
+                    selected = selected,
+                    onClick = if (profile.enabled) onSelect else null,
+                    enabled = profile.enabled
+                )
+
+                OutlinedTextField(
+                    value = nameText,
+                    onValueChange = { newName ->
+                        nameText = newName
+                        onUpdate(
+                            newName,
+                            profile.weightGrams,
+                            profile.diameterMm
+                        )
+                    },
+                    label = { Text("Profile name") },
+                    singleLine = true,
+                    enabled = profile.enabled,
+                    modifier = Modifier.weight(1f)
+                )
+
+                Switch(
+                    checked = profile.enabled,
+                    onCheckedChange = onEnabledChange
+                )
+
+                IconButton(onClick = onDelete) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = "Delete profile",
+                        tint = MaterialTheme.colorScheme.error
+                    )
                 }
             }
-        )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedTextField(
+                    value = weightText,
+                    onValueChange = { newValue ->
+                        weightText = newValue
+                        newValue.text
+                            .replace(',', '.')
+                            .toFloatOrNull()
+                            ?.let { weight ->
+                                onUpdate(nameText, weight, profile.diameterMm)
+                            }
+                    },
+                    label = { Text("Weight") },
+                    suffix = { Text("g") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Decimal
+                    ),
+                    singleLine = true,
+                    enabled = profile.enabled,
+                    modifier = Modifier.weight(1f)
+                )
+
+                OutlinedTextField(
+                    value = diameterText,
+                    onValueChange = { newValue ->
+                        diameterText = newValue
+                        newValue.text
+                            .replace(',', '.')
+                            .toFloatOrNull()
+                            ?.let { diameter ->
+                                onUpdate(nameText, profile.weightGrams, diameter)
+                            }
+                    },
+                    label = { Text("Diameter") },
+                    suffix = { Text("mm") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Decimal
+                    ),
+                    singleLine = true,
+                    enabled = profile.enabled,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            if (profile.builtIn) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = "Standard profile",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
     }
 }
 
