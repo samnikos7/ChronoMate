@@ -450,6 +450,231 @@ class ChronoViewModel(context: Context) : ViewModel() {
         savePreference(context, "chrono_type", type.name)
     }
 
+    fun addBbProfile(context: Context) {
+        _uiState.update { current ->
+            val newProfile = BbProfile(
+                id = "custom_${System.currentTimeMillis()}",
+                name = "New profile",
+                weightGrams = 0.20f,
+                diameterMm = 5.95f,
+                enabled = true,
+                builtIn = false
+            )
+
+            val updatedProfiles =
+                current.bbProfiles + newProfile
+
+            saveBbProfiles(context, updatedProfiles)
+
+            current.copy(
+                bbProfiles = updatedProfiles
+            )
+        }
+    }
+
+    fun updateBbProfile(
+        context: Context,
+        profileId: String,
+        name: String,
+        weightGrams: Float,
+        diameterMm: Float
+    ) {
+        _uiState.update { current ->
+            val sanitizedName = name
+                .replace("|", "")
+                .replace(";", "")
+                .trim()
+                .ifBlank { "Unnamed profile" }
+
+            val validWeight =
+                weightGrams.coerceIn(0.01f, 10.0f)
+
+            val validDiameter =
+                diameterMm.coerceIn(1.0f, 20.0f)
+
+            val updatedProfiles =
+                current.bbProfiles.map { profile ->
+                    if (profile.id == profileId) {
+                        profile.copy(
+                            name = sanitizedName,
+                            weightGrams = validWeight,
+                            diameterMm = validDiameter
+                        )
+                    } else {
+                        profile
+                    }
+                }
+
+            saveBbProfiles(context, updatedProfiles)
+
+            val selectedProfile = updatedProfiles.firstOrNull {
+                it.id == current.selectedBbProfileId
+            }
+
+            current.copy(
+                bbProfiles = updatedProfiles,
+                selectedWeight =
+                    selectedProfile?.weightGrams
+                        ?: current.selectedWeight,
+                diameterMm =
+                    selectedProfile?.diameterMm
+                        ?: current.diameterMm
+            )
+        }
+    }
+
+    fun setBbProfileEnabled(
+        context: Context,
+        profileId: String,
+        enabled: Boolean
+    ) {
+        _uiState.update { current ->
+            val targetProfile = current.bbProfiles.firstOrNull {
+                it.id == profileId
+            } ?: return@update current
+
+            if (
+                !enabled &&
+                targetProfile.enabled &&
+                current.bbProfiles.count { it.enabled } <= 1
+            ) {
+                return@update current
+            }
+
+            val updatedProfiles =
+                current.bbProfiles.map { profile ->
+                    if (profile.id == profileId) {
+                        profile.copy(enabled = enabled)
+                    } else {
+                        profile
+                    }
+                }
+
+            val selectedProfile =
+                updatedProfiles.firstOrNull {
+                    it.id == current.selectedBbProfileId &&
+                        it.enabled
+                } ?: updatedProfiles.firstOrNull {
+                    it.enabled
+                }
+
+            saveBbProfiles(context, updatedProfiles)
+
+            selectedProfile?.let {
+                savePreference(
+                    context,
+                    "selected_bb_profile_id",
+                    it.id
+                )
+            }
+
+            current.copy(
+                bbProfiles = updatedProfiles,
+                selectedBbProfileId = selectedProfile?.id,
+                selectedWeight =
+                    selectedProfile?.weightGrams
+                        ?: current.selectedWeight,
+                diameterMm =
+                    selectedProfile?.diameterMm
+                        ?: current.diameterMm
+            )
+        }
+    }
+
+    fun removeBbProfile(
+        context: Context,
+        profileId: String
+    ) {
+        _uiState.update { current ->
+            val profileToRemove = current.bbProfiles.firstOrNull {
+                it.id == profileId
+            } ?: return@update current
+
+            if (
+                profileToRemove.enabled &&
+                current.bbProfiles.count { it.enabled } <= 1
+            ) {
+                return@update current
+            }
+
+            val updatedProfiles =
+                current.bbProfiles.filterNot {
+                    it.id == profileId
+                }
+
+            val selectedProfile =
+                updatedProfiles.firstOrNull {
+                    it.id == current.selectedBbProfileId &&
+                        it.enabled
+                } ?: updatedProfiles.firstOrNull {
+                    it.enabled
+                }
+
+            saveBbProfiles(context, updatedProfiles)
+
+            selectedProfile?.let {
+                savePreference(
+                    context,
+                    "selected_bb_profile_id",
+                    it.id
+                )
+            }
+
+            current.copy(
+                bbProfiles = updatedProfiles,
+                selectedBbProfileId = selectedProfile?.id,
+                selectedWeight =
+                    selectedProfile?.weightGrams
+                        ?: current.selectedWeight,
+                diameterMm =
+                    selectedProfile?.diameterMm
+                        ?: current.diameterMm
+            )
+        }
+    }
+
+    fun restoreDefaultBbProfiles(context: Context) {
+        _uiState.update { current ->
+            val customProfiles = current.bbProfiles.filter {
+                !it.builtIn
+            }
+
+            val updatedProfiles =
+                createDefaultBbProfiles() + customProfiles
+
+            val selectedProfile =
+                updatedProfiles.firstOrNull {
+                    it.id == current.selectedBbProfileId &&
+                        it.enabled
+                } ?: updatedProfiles.firstOrNull {
+                    it.id == "standard_20"
+                } ?: updatedProfiles.firstOrNull {
+                    it.enabled
+                }
+
+            saveBbProfiles(context, updatedProfiles)
+
+            selectedProfile?.let {
+                savePreference(
+                    context,
+                    "selected_bb_profile_id",
+                    it.id
+                )
+            }
+
+            current.copy(
+                bbProfiles = updatedProfiles,
+                selectedBbProfileId = selectedProfile?.id,
+                selectedWeight =
+                    selectedProfile?.weightGrams
+                        ?: 0.20f,
+                diameterMm =
+                    selectedProfile?.diameterMm
+                        ?: 5.95f
+            )
+        }
+    }
+
     fun addCustomWeight(context: Context) {
         _uiState.update { current ->
             val newList = current.customWeights + CustomWeight("New Weight", 0.20f)
